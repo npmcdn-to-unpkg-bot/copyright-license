@@ -23,9 +23,16 @@ html(lang="en")
         .collapse.navbar-collapse#navbar
           ul.nav.navbar-nav
             li
-              a(href="/about/") About
+              a(href="/purchase") Purchase
+            li
+              a(href="/create") Create
+            li
+              a(href="/about") About
           block navbar
 
     block content
-    script(src="/static/js/load-resources.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.min.js")
+
     block scripts
