@@ -1,0 +1,128 @@
+body {
+    background: white;
+    margin: 30px auto;
+}
+
+.starter-template {
+    padding: 40px 15px;
+}
+
+.container {
+  margin: auto;
+}
+
+.col-centered{
+    float: none;
+}
+
+.dataTables_filter input {
+    font-weight: normal;
+    color: rgba(0,0,0,0.65);
+}
+
+h1 {
+  color: #262626;
+}
+
+p {
+  color: #262626;
+}
+
+span.recipe {
+    color: darkgray;
+    padding-left: 1em;
+}
+
+.fix {
+  max-width: 500px;
+  margin: 30px auto;
+}
+
+h3 {
+  color: #26262e;
+}
+
+.btn-flat {
+  color: #e5ce9b;
+  background-image: none;
+  background: #570002;
+  border-color: #570002;
+  -webkit-box-shadow: none;
+}
+
+.btn-flat:hover {
+  color: #e5ce9b;
+  background-image: none;
+  background: #610000;
+  border-color: #610000;
+  -webkit-box-shadow: none;
+}
+
+.btn-flat:active {
+  color: #e5ce9b;
+  outline: none;
+}
+
+.btn-flat:active:hover {
+  color: #e5ce9b;
+  outline: none;
+}
+
+.btn-flat:focus {
+  color: #e5ce9b;
+  outline: none;
+}
+
+.twitter-typeahead {
+    width: 100%;
+    position: relative;
+}
+
+.tt-dropdown-menu {
+    width: 100%;
+    min-width: 160px;
+    margin-top: 2px;
+    padding: 5px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    *border-right-width: 2px;
+    *border-bottom-width: 2px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+}
+.tt-suggestion {
+    display: block;
+    padding: 3px 20px;
+}
+.twitter-typeahead .tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #C0392B;
+    background-image: -moz-linear-gradient(top, #C0392B, #C0392B);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#C0392B), to(#C0392B));
+    background-image: -webkit-linear-gradient(top, #C0392B, #C0392B);
+    background-image: -o-linear-gradient(top, #C0392B, #C0392B);
+    background-image: linear-gradient(to bottom, #C0392B, #C0392B);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
+}
+.tt-suggestion.tt-cursor a {
+    color: #fff;
+}
+.tt-suggestion p {
+    margin: 0;
+    color: #272822;
+}
+
+.tt-suggestions strong {
+    color: #272822;
+}
+
+

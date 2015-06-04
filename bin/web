@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ "$FLASK_ENV" == "development" ]; then
+    echo 'dev mode'
+    python copyright.py
+else
+    echo 'prod mode'
+    gunicorn copyright:app --log-file=-
+fi
+
