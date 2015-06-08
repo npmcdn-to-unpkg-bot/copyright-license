@@ -5,11 +5,11 @@ block content
     p.lead Purchase a License
     if licenses
       for license in licenses
-        p #{license.image_url}
-        img(src="#{license.image_url}")
-        form(action="/charge", method="POST")
+        img.img-responsive(src="#{license.image_url}")
+        form(action="/charge", method="post")
+          input(type="hidden", value="#{license.id}", name="termId")
           article
             label
               span Amount is #{license.amount} cents
-        script.stripe-button(src="https://checkout.stripe.com/checkout.js", data-key="license.owner_stripe_token", data-description="A Flask Charge", data-amount="#{license.amount}")
+          script.stripe-button(src="https://checkout.stripe.com/v2/checkout.js", data-key="#{api_key}", data-description="Purchase a License", data-amount="#{license.amount}")
         br

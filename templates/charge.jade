@@ -1,4 +1,7 @@
 extends ./header.jade
 block content
    .container.starter-template
-      p.lead Success! You paid #{amount} cents!
+      if success
+         p.lead Success! #{justification}
+      else
+         p.lead Failed. #{justification}

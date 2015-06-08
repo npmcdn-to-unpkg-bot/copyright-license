@@ -17,8 +17,13 @@ app.jinja_env.add_extension('pyjade.ext.jinja.PyJadeExtension')
 app.config['SITE'] = 'https://connect.stripe.com'
 app.config['TOKEN_URI'] = '/oauth/token'
 app.config['CLIENT_ID'] = os.environ['CLIENT_ID']
-app.config['API_KEY'] = os.environ['API_KEY']
 
+stripe_keys = {
+    'secret_key': os.environ['SECRET_KEY'],
+    'publishable_key': os.environ['PUBLISHABLE_KEY']
+}
+
+stripe.api_key = stripe_keys['secret_key']
 
 db = SQLAlchemy(app)
 
@@ -29,10 +34,8 @@ class LicenseTerms(db.Model):
     """
     __tablename__ = "terms"
     id = db.Column(db.Integer, primary_key=True)
-    owner_stripe_token = db.Column(db.String())
     owner_stripe_id = db.Column(db.String())
-    owner_publishable_key = db.Column(db.String())
-    amount = db.Column(db.String())
+    amount = db.Column(db.Integer())
     image_url = db.Column(db.String())
     time_recorded = db.Column(db.DateTime())
 
@@ -44,7 +47,7 @@ class License(db.Model):
     __tablename__ = "licenses"
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String())
-    license_id = db.Column(db.Integer) #TODO make foreign key
+    term_id = db.Column(db.Integer, db.ForeignKey('terms.id'))
     time_recorded = db.Column(db.DateTime())
 
 
@@ -64,35 +67,43 @@ def about():
 
 @app.route('/charge', methods=['POST'])
 def charge():
-    # Amount in cents
-    amount = 500
-
-    #TODO
-    #get amount
-    #get customer id
-
-    print(request.form)
+    term_id = request.form['termId']
+    result = LicenseTerms.query.get(term_id)
 
     customer = stripe.Customer.create(
-        email='customer@example.com',
+        email=request.form['stripeEmail'],
         card=request.form['stripeToken']
     )
 
-    charge = stripe.Charge.create(
-        customer=customer.id,
-        amount=amount,
-        currency='usd',
-        description='Flask Charge'
-    )
-    # TODO: store a record of the purchase
+    new = License()
+    new.term_id = term_id
+    new.time_recorded = datetime.datetime.now()
+    new.user = customer.email
 
-    return render_template('charge.jade', amount=amount)
+    if License.query.filter_by(term_id=new.term_id, user=new.user).all():
+        success = False
+        justification = "You've already purchased a license for this image."
+    else:
+        completed_charge = stripe.Charge.create(
+            customer=customer.id,
+            amount=result.amount,
+            currency='usd',
+            description='Flask Charge',
+            destination=result.owner_stripe_id
+        )
+
+        db.session.add(new)
+        db.session.commit()
+        success = True
+        justification = "You've paid %d cents" % result.amount
+
+    return render_template('charge.jade', success=success, justification=justification)
 
 
 @app.route('/purchase')
 def purchase():
     licenses = LicenseTerms.query.filter_by().all()
-    return render_template('purchase.jade', licenses=licenses)
+    return render_template('purchase.jade', licenses=licenses, api_key=stripe_keys['publishable_key'])
 
 
 @app.route('/create')
@@ -103,28 +114,25 @@ def create():
 @app.route('/register', methods=['POST'])
 def register_license():
     url = request.form['url']
-    amount = request.form['amount']
-    token = request.form['token']
-    stripe_publishable_key = request.form['key']
+    amount = request.form['amount']  # TODO convert to dollars
     stripe_user_id = request.form['id']
 
     success = True
     justification = ''
 
-    if LicenseTerms.query.filter_by(url=url).all():
+    if LicenseTerms.query.filter_by(image_url=url).all():
         success = False
         justification = 'That image has already been registered'
+    else:
+        new = LicenseTerms()
+        new.amount = amount
+        new.owner_stripe_id = stripe_user_id
+        new.image_url = url
+        new.time_recorded = datetime.datetime.now()
 
-    new = LicenseTerms()
-    new.amount = amount
-    new.owner_stripe_token = token
-    new.owner_stripe_id = stripe_user_id
-    new.owner_publishable_key = stripe_publishable_key
-    new.image_url = url
-    new.time_recorded = datetime.datetime.now()
+        db.session.add(new)
+        db.session.commit()
 
-    db.session.add(new)
-    db.session.commit()
     return render_template('creation-outcome.jade', success=success, justification=justification)
 
 
@@ -133,16 +141,12 @@ def callback():
     code = request.args.get('code')
     data = {'grant_type': 'authorization_code',
             'client_id': app.config['CLIENT_ID'],
-            'client_secret': app.config['API_KEY'],
+            'client_secret': stripe_keys['secret_key'],
             'code': code}
 
     # Make /oauth/token endpoint POST request
     url = app.config['SITE'] + app.config['TOKEN_URI']
-    print("URL")
-    print(url)
     resp = requests.post(url, params=data)
-    print("RESP")
-    print(resp)
 
     # Grab access_token (use this as your user's API key)
     resp = resp.json()
