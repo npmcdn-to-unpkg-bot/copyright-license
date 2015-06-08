@@ -1,23 +1,23 @@
 extends ./header.jade
 
-block navbar
 block content
   .container.starter-template
     p.lead Create a License
     unless token
-      p First, you'll need to <a class="btn btn-primary" href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&scope=read_write"> Connect with Stripe </a>
+      p First, you'll need to
+        a.btn.btn-primary(href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&scope=read_write") Connect with Stripe
     else
-      p You've authenticated via Stripe Connect as #{username}. You can create a license below:
+      p You've authenticated via Stripe Connect as #{stripe_username}. You can create a license below:
       form#licenseInfo.form-horizontal(action="/register", method="POST")
         .form-group
-          input(type="hidden", value=#{token}, name="token")
+          input(type="hidden", value="#{token}", name="token")
+          input(type="hidden", value="#{stripe_key}", name="key")
+          input(type="hidden", value="#{stripe_username}", name="id")
           label(for="imageInput") Image URL
           input.form-control#imageInput(type="text", name="url")
         .form-group
           label.sr-only(for="licensePrice") License Price (in dollars)
           .input-group
             .input-group-addon $
-            input#licensePrice.form-control(type=text, placeholder="Amount", name="amount")
+            input#licensePrice.form-control(type="text", placeholder="Amount", name="amount")
         button.btn.btn-default Create
-
-block scripts

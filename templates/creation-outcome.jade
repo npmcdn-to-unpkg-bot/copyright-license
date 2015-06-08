@@ -1,10 +1,8 @@
 extends ./header.jade
-block navbar
 block content
     .container.starter-template
         p.lead Create a License
         if success
            p Success! The license is registered in our database.
         else
-           p That didn't work because: #{justification}
-block scripts
+           p The license could not be registered because: #{justification}

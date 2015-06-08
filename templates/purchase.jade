@@ -1,29 +1,15 @@
 extends ./header.jade
 
-block navbar
 block content
   .container.starter-template
     p.lead Purchase a License
-    button.btn.btn-primary#customButton Purchase
-
-block scripts
-  script(src="https://checkout.stripe.com/checkout.js")
-  script.
-    var handler = StripeCheckout.configure({
-    key: 'pk_test_ROHiUOYyPwxEMBtDz2vIpwHM',
-    image: '',
-    token: function(token) {}
-    });
-
-    $('#customButton').on('click', function(e) {
-      handler.open({
-        name: 'Demo Site',
-        description: '2 widgets',
-        amount: 2000
-      });
-      e.preventDefault();
-    });
-
-    $(window).on('popstate', function() {
-      handler.close();
-    });
+    if licenses
+      for license in licenses
+        p #{license.image_url}
+        img(src="#{license.image_url}")
+        form(action="/charge", method="POST")
+          article
+            label
+              span Amount is #{license.amount} cents
+        script.stripe-button(src="https://checkout.stripe.com/checkout.js", data-key="license.owner_stripe_token", data-description="A Flask Charge", data-amount="#{license.amount}")
+        br

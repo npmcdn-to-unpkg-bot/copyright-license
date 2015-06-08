@@ -19,12 +19,6 @@ app.config['TOKEN_URI'] = '/oauth/token'
 app.config['CLIENT_ID'] = os.environ['CLIENT_ID']
 app.config['API_KEY'] = os.environ['API_KEY']
 
-# stripe_keys = {
-#     'secret_key': os.environ['SECRET_KEY'],
-#     'publishable_key': os.environ['PUBLISHABLE_KEY']
-# }
-#
-# stripe.api_key = stripe_keys['secret_key']
 
 db = SQLAlchemy(app)
 
@@ -36,6 +30,8 @@ class LicenseTerms(db.Model):
     __tablename__ = "terms"
     id = db.Column(db.Integer, primary_key=True)
     owner_stripe_token = db.Column(db.String())
+    owner_stripe_id = db.Column(db.String())
+    owner_publishable_key = db.Column(db.String())
     amount = db.Column(db.String())
     image_url = db.Column(db.String())
     time_recorded = db.Column(db.DateTime())
@@ -51,10 +47,10 @@ class License(db.Model):
     license_id = db.Column(db.Integer) #TODO make foreign key
     time_recorded = db.Column(db.DateTime())
 
-# TODO: Enable charges
-# TODO: display licenses
-# TODO: Create records
 
+# TODO: make license logic match the layout
+# update the registration
+# update the purchasing
 
 @app.route('/')
 def index():
@@ -65,13 +61,39 @@ def index():
 def about():
     return render_template('about.jade')
 
+
 @app.route('/charge', methods=['POST'])
 def charge():
-    pass
+    # Amount in cents
+    amount = 500
+
+    #TODO
+    #get amount
+    #get customer id
+
+    print(request.form)
+
+    customer = stripe.Customer.create(
+        email='customer@example.com',
+        card=request.form['stripeToken']
+    )
+
+    charge = stripe.Charge.create(
+        customer=customer.id,
+        amount=amount,
+        currency='usd',
+        description='Flask Charge'
+    )
+    # TODO: store a record of the purchase
+
+    return render_template('charge.jade', amount=amount)
+
 
 @app.route('/purchase')
 def purchase():
-    return render_template('purchase.jade')
+    licenses = LicenseTerms.query.filter_by().all()
+    return render_template('purchase.jade', licenses=licenses)
+
 
 @app.route('/create')
 def create():
@@ -83,6 +105,8 @@ def register_license():
     url = request.form['url']
     amount = request.form['amount']
     token = request.form['token']
+    stripe_publishable_key = request.form['key']
+    stripe_user_id = request.form['id']
 
     success = True
     justification = ''
@@ -94,6 +118,8 @@ def register_license():
     new = LicenseTerms()
     new.amount = amount
     new.owner_stripe_token = token
+    new.owner_stripe_id = stripe_user_id
+    new.owner_publishable_key = stripe_publishable_key
     new.image_url = url
     new.time_recorded = datetime.datetime.now()
 
@@ -122,7 +148,8 @@ def callback():
     resp = resp.json()
     token = resp.get('access_token', None)
     username = resp.get('stripe_user_id', "(Didn't get an ID from Stripe)")
-    return render_template('create.jade', token=token, username=username)
+    access_key = resp.get('stripe_publishable_key', None)
+    return render_template('create.jade', token=token, stripe_username=username, stripe_key=access_key)
 
 
 @app.errorhandler(404)
