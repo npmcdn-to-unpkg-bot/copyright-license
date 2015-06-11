@@ -46,6 +46,6 @@ block content
         .col-sm-12
           article
             label
-              span Amount is #{license.amount} cents
-          script.stripe-button(src="https://checkout.stripe.com/v2/checkout.js", data-key="#{api_key}", data-description="Purchase a License", data-amount="#{license.amount}")
-        br
+              span#displayedAmount PLACEHOLDER FOR TESTING
+          script#stripeButton.stripe-button(src="https://checkout.stripe.com/v2/checkout.js", data-key="#{api_key}", data-description="Accept Terms and Purchase a License", data-amount="50")
+    script(src='/js/paymentPage.js')
