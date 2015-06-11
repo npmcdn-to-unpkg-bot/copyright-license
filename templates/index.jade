@@ -1,5 +1,10 @@
 extends ./header.jade
-
 block content
   .container.starter-template
-    p.lead Welcome to the License Exchange.
+    p.lead Purchase a License
+    if licenses
+      for license in licenses
+        img.img-responsive(src="#{license.image_url}")
+        form(action="/purchase/#{license.id}")
+          input.btn.btn-primary(type="submit", value="Purchase")
+        br

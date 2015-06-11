@@ -35,20 +35,31 @@ class LicenseTerms(db.Model):
     __tablename__ = "terms"
     id = db.Column(db.Integer, primary_key=True)
     owner_stripe_id = db.Column(db.String())
-    amount = db.Column(db.Integer())
     image_url = db.Column(db.String())
     time_recorded = db.Column(db.DateTime())
 
 
-class License(db.Model):
+class PaymentAmount(db.Model):
+    __tablename__ = "payment_amounts"
+    id = db.Column(db.Integer, primary_key=True)
+    term_id = db.Column(db.Integer, db.ForeignKey('terms.id'))
+    minimum_views = db.Column(db.Integer)
+    maximum_views = db.Column(db.Integer)
+    cents = db.Column(db.Integer)
+
+
+class LicenseReceipt(db.Model):
     """
     A record of users who have paid for a license
     """
-    __tablename__ = "licenses"
+    __tablename__ = "receipts"
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String())
     term_id = db.Column(db.Integer, db.ForeignKey('terms.id'))
     time_recorded = db.Column(db.DateTime())
+    minimum_views = db.Column(db.Integer)
+    maximum_views = db.Column(db.Integer)
+    for_profit = db.Column(db.Boolean)
 
 
 # TODO: make license logic match the layout
@@ -57,7 +68,8 @@ class License(db.Model):
 
 @app.route('/')
 def index():
-    return render_template('index.jade')
+    licenses = LicenseTerms.query.filter_by().all()
+    return render_template('index.jade', licenses=licenses)
 
 
 @app.route('/about')
@@ -68,42 +80,54 @@ def about():
 @app.route('/charge', methods=['POST'])
 def charge():
     term_id = request.form['termId']
+    payment_amount_id = request.form['paymentAmountId']
+    print(payment_amount_id)
+    for_profit = request.form['profitRadios']
+    print(for_profit)
+
     result = LicenseTerms.query.get(term_id)
+    selected_payment = PaymentAmount.query.get(payment_amount_id)
 
     customer = stripe.Customer.create(
         email=request.form['stripeEmail'],
         card=request.form['stripeToken']
     )
 
-    new = License()
+    new = LicenseReceipt()
     new.term_id = term_id
     new.time_recorded = datetime.datetime.now()
     new.user = customer.email
+    new.minimum_views = selected_payment.minimum_views
+    new.maximum_views = selected_payment.maximum_views
 
-    if License.query.filter_by(term_id=new.term_id, user=new.user).all():
+    if LicenseReceipt.query.filter_by(term_id=new.term_id, user=new.user).all():
         success = False
         justification = "You've already purchased a license for this image."
     else:
         completed_charge = stripe.Charge.create(
             customer=customer.id,
-            amount=result.amount,
+            amount=selected_payment.cents,
             currency='usd',
-            description='Flask Charge',
+            description='License Purchase',
             destination=result.owner_stripe_id
         )
-
         db.session.add(new)
         db.session.commit()
         success = True
-        justification = "You've paid %d cents" % result.amount
+        justification = "You've paid %d cents" % selected_payment.cents
 
     return render_template('charge.jade', success=success, justification=justification)
 
 
-@app.route('/purchase')
-def purchase():
-    licenses = LicenseTerms.query.filter_by().all()
-    return render_template('purchase.jade', licenses=licenses, api_key=stripe_keys['publishable_key'])
+@app.route('/purchase/<int:term_id>')
+def purchase(term_id):
+    license_terms = LicenseTerms.query.get(term_id)
+    if not license_terms:
+        return render_template('404.jade')
+    payment_amounts = PaymentAmount.query.filter_by(term_id=term_id)
+    if not payment_amounts:
+        return render_template('404.jade')
+    return render_template('purchase.jade', terms=license_terms, payments=payment_amounts, api_key=stripe_keys['publishable_key'])
 
 
 @app.route('/create')
@@ -125,12 +149,20 @@ def register_license():
         justification = 'That image has already been registered'
     else:
         new = LicenseTerms()
-        new.amount = amount
         new.owner_stripe_id = stripe_user_id
         new.image_url = url
         new.time_recorded = datetime.datetime.now()
 
         db.session.add(new)
+        db.session.commit()
+
+        payment = PaymentAmount()
+        payment.minimum_views = 0
+        payment.maximum_views = 1000
+        payment.cents = amount
+        payment.term_id = new.id
+
+        db.session.add(payment)
         db.session.commit()
 
     return render_template('creation-outcome.jade', success=success, justification=justification)

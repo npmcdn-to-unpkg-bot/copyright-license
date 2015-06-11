@@ -2,12 +2,48 @@ extends ./header.jade
 
 block content
   .container.starter-template
-    p.lead Purchase a License
-    if licenses
-      for license in licenses
-        img.img-responsive(src="#{license.image_url}")
-        form(action="/charge", method="post")
-          input(type="hidden", value="#{license.id}", name="termId")
+    p.lead License This Image For Use on a Blog
+    .row
+      .col-sm-12
+        img.img-responsive(src="#{terms.image_url}")
+    br
+    form(action="/charge", method="post")
+      input(type="hidden", value="#{terms.id}", name="termId")
+      .row
+        .col-sm-12
+          label.control-label Will you receive financial benefit directly attributable to the blog?
+          .radio
+            label
+              input#profit1(type="radio", name="profitRadios", value="True")
+              | Yes
+          .radio
+            label
+              input#profit2(type="radio", name="profitRadios", value="False")
+              | No
+      .row
+        .col-sm-12
+          label.control-label How many pageviews should this license be active for?
+          if payments
+            for option in payments
+              .radio
+                label
+                  input.payment-input(type="radio", name="paymentAmountId", value="#{option.id}", data-cents="#{option.cents}")
+                  | #{option.minimum_views} - #{option.maximum_views} views (#{option.cents} cents)
+      .row
+        .col-sm-12
+          button.btn.btn-default#termsToggle Display Terms
+          .hidden#hiddenTerms
+            p The license is subject to the following mandatory terms of use:
+            p (i) The image may be reproduced online only. No physical copy can be made.
+            p (ii) There are no geographical limitations to the use of the license.
+            p (iii) The license is non-exclusive, non-transferable, and non-sub-licensable.
+            p (iv) The photographer must be attributed.
+            p (v) No use can in any way depict the model (if any) in a sensitive, unflattering, or controversial way.
+            p (vi) No creation of derivative work
+            p (vii) The license can be terminated by a one month written notice after the expiry of the first six months.
+
+      .row
+        .col-sm-12
           article
             label
               span Amount is #{license.amount} cents
