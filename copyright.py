@@ -138,7 +138,7 @@ def create():
 @app.route('/register', methods=['POST'])
 def register_license():
     url = request.form['url']
-    amount = request.form['amount']  # TODO convert to dollars
+    amount = request.form['amount']
     stripe_user_id = request.form['id']
 
     success = True

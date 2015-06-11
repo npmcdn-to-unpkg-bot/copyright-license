@@ -13,8 +13,8 @@ block content
           label(for="imageInput") Image URL
           input.form-control#imageInput(type="text", name="url")
         .form-group
-          label.sr-only(for="licensePrice") License Price (in dollars)
+          label.sr-only(for="licensePrice") License Price (minimum 50 cents)
           .input-group
-            .input-group-addon $
+            .input-group-addon cents
             input#licensePrice.form-control(type="text", placeholder="Amount", name="amount")
         button.btn.btn-default Create
