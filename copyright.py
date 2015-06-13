@@ -78,6 +78,7 @@ def about():
 
 @app.route('/charge', methods=['POST'])
 def charge():
+    print("BEGINNING CHARGE")
     term_id = request.form['termId']
     payment_amount_id = request.form['paymentAmountId']
     for_profit = request.form['profitRadios']
@@ -101,17 +102,22 @@ def charge():
         success = False
         justification = "You've already purchased a license for this image."
     else:
-        completed_charge = stripe.Charge.create(
-            customer=customer.id,
-            amount=selected_payment.cents,
-            currency='usd',
-            description='License Purchase',
-            destination=result.owner_stripe_id
-        )
-        db.session.add(new)
-        db.session.commit()
-        success = True
-        justification = "You've paid %d cents" % selected_payment.cents
+        try:
+            completed_charge = stripe.Charge.create(
+                customer=customer.id,
+                amount=selected_payment.cents,
+                currency='usd',
+                description='License Purchase',
+                destination=result.owner_stripe_id
+            )
+            db.session.add(new)
+            db.session.commit()
+            success = True
+            justification = "You've paid %d cents" % selected_payment.cents
+        except stripe.InvalidRequestError as e:
+            print(e)
+            success = False
+            justification = "The most likely reason the purchase failed is that you tried to buy your own photo. Try buying a photo someone else uploaded."
 
     return render_template('charge.jade', success=success, justification=justification)
 
