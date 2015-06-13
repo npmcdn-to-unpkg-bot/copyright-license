@@ -7,8 +7,10 @@ block content
       .col-sm-12
         img.img-responsive(src="#{terms.image_url}")
     br
-    form(action="/charge", method="post")
+    form#purchaseForm(action="/charge", method="POST").well
       input(type="hidden", value="#{terms.id}", name="termId")
+      input#tokenId(type="hidden", value="", name="tokenId")
+      input#stripeEmail(type="hidden", value="", name="stripeEmail")
       .row
         .col-sm-12
           label.control-label Will you receive financial benefit directly attributable to the blog?
@@ -27,12 +29,12 @@ block content
             for option in payments
               .radio
                 label
-                  input.payment-input(type="radio", name="paymentAmountId", value="#{option.id}", data-cents="#{option.cents}")
+                  input.payment-input(type="radio", name="paymentAmountId", value="#{option.id}", data-cents="#{option.cents}", data-views="#{option.maximum_views}")
                   | #{option.minimum_views} - #{option.maximum_views} views (#{option.cents} cents)
       .row
         .col-sm-12
-          button.btn.btn-default#termsToggle Display Terms
-          .hidden#hiddenTerms
+          .btn.btn-default#termsToggle Display Terms
+          #hiddenTerms(style="display: none")
             p The license is subject to the following mandatory terms of use:
             p (i) The image may be reproduced online only. No physical copy can be made.
             p (ii) There are no geographical limitations to the use of the license.
@@ -42,10 +44,34 @@ block content
             p (vi) No creation of derivative work
             p (vii) The license can be terminated by a one month written notice after the expiry of the first six months.
 
-      .row
-        .col-sm-12
-          article
-            label
-              span#displayedAmount PLACEHOLDER FOR TESTING
-          script#stripeButton.stripe-button(src="https://checkout.stripe.com/v2/checkout.js", data-key="#{api_key}", data-description="Accept Terms and Purchase a License", data-amount="50")
-    script(src='/js/paymentPage.js')
+
+    #amount(data-amount=50)
+    #maxViews(data-views=0)
+
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js")
+    script(src="https://checkout.stripe.com/checkout.js")
+
+    button.btn.btn-default#paymentButton Agree to Terms and Purchase
+    script.
+      var handler = StripeCheckout.configure({
+        key: '#{api_key}',
+        token: function (token) {
+          $('#tokenId').attr('value', token.id);
+          $('#stripeEmail').attr('value', token.email);
+          $('#purchaseForm').submit();
+        }
+      });
+      $('#paymentButton').on('click', function (e) {
+        handler.open({
+          name: 'Purchase a License',
+          description: 'at most ' + $('#maxViews').data('views') + ' views',
+          amount: $('#amount').data('amount')
+        });
+        e.preventDefault();
+      });
+      $(window).on('popstate', function () {
+        handler.close();
+      });
+
+block scripts
+  script(src="/static/js/paymentPage.js")

@@ -1,14 +1,16 @@
 window.onload = function() {
 
     $("#termsToggle").click(function() {
-        $("hiddenTerms").toggle();
+        $("#hiddenTerms").toggle();
     });
 
-    $(".payment-input").on('selected', function() {
-        var cents = $(this).attr('data-cents');
-        console.log('SELECTED ' + cents);
+    $(".payment-input").on('change', function() {
+        var cents = $(this).data('cents');
+        var maxViews = $(this).data('views');
         $('#displayedAmount').text('Amount is ' + cents + ' cents');
-        $('#stripeButton').attr('data-amount', cents);   //IS THIS HOW TO GET DATA
+        $('#amount').data('amount', cents);
+        $('#maxViews').data('views', maxViews);
+        $('#paymentButton').show();
     });
 
 };

@@ -80,16 +80,14 @@ def about():
 def charge():
     term_id = request.form['termId']
     payment_amount_id = request.form['paymentAmountId']
-    print(payment_amount_id)
     for_profit = request.form['profitRadios']
-    print(for_profit)
 
     result = LicenseTerms.query.get(term_id)
     selected_payment = PaymentAmount.query.get(payment_amount_id)
 
     customer = stripe.Customer.create(
         email=request.form['stripeEmail'],
-        card=request.form['stripeToken']
+        card=request.form['tokenId']
     )
 
     new = LicenseReceipt()
@@ -160,8 +158,15 @@ def register_license():
         payment.maximum_views = 1000
         payment.cents = amount
         payment.term_id = new.id
-
         db.session.add(payment)
+
+        payment_two = PaymentAmount()
+        payment_two.minimum_views = 1001
+        payment_two.maximum_views = 10000
+        payment_two.cents = int(amount)*2
+        payment_two.term_id = new.id
+
+        db.session.add(payment_two)
         db.session.commit()
 
     return render_template('creation-outcome.jade', success=success, justification=justification)
