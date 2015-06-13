@@ -3,6 +3,11 @@ body {
     margin: 30px auto;
 }
 
+.margin-centering {
+    margin: 0 auto;
+    text-align:center;
+}
+
 .starter-template {
     padding: 40px 15px;
 }

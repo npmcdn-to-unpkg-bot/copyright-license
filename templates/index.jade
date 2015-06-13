@@ -4,7 +4,7 @@ block content
     p.lead Purchase a License
     if licenses
       for license in licenses
-        img.img-responsive(src="#{license.image_url}")
-        form(action="/purchase/#{license.id}")
+        img.img-responsive.margin-centering(src="#{license.image_url}")
+        form.margin-centering(action="/purchase/#{license.id}")
           input.btn.btn-primary(type="submit", value="Purchase")
         br
