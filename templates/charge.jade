@@ -4,4 +4,9 @@ block content
       if success
          p.lead Success! #{justification}
       else
-         p.lead Failed. #{justification}
+         p.lead The attempt to charge you failed. #{justification}
+      if download
+         img#image(src="#{url}")
+         br
+         a.btn.btn-primary(href="#{url}", download="licensedImage.jpg") Download Image
+         p (If the button does not begin a download, right-click the full image above to download and save it.)
