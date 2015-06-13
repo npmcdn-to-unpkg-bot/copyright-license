@@ -62,9 +62,8 @@ class LicenseReceipt(db.Model):
     for_profit = db.Column(db.Boolean)
 
 
-# TODO: make license logic match the layout
-# update the registration
-# update the purchasing
+# update the license registration with more possible terms
+# TODO turn stripe on for real
 
 @app.route('/')
 def index():
