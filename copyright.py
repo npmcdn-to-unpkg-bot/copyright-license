@@ -117,7 +117,7 @@ def charge():
         except stripe.InvalidRequestError as e:
             print(e)
             success = False
-            justification = "The most likely reason the purchase failed is that you tried to buy your own photo. Try buying a photo someone else uploaded."
+            justification = "The most likely reason the purchase failed is that you tried to buy your own photo. Try buying a photo someone else uploaded. In the meantime, feel free to download your own photo below."
 
     return render_template('charge.jade', success=success, justification=justification)
 
