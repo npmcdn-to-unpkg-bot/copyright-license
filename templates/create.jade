@@ -3,6 +3,15 @@ extends ./header.jade
 block content
   .container.starter-template
     p.lead Create a License
+    p. The license is subject to the following mandatory terms of use:
+    ul
+      li (i) The image may be reproduced online only. No physical copy can be made.
+      li (ii) There are no geographical limitations to the use of the license.
+      li (iii) The license is non-exclusive, non-transferable, and non-sub-licensable.
+      li (iv) The photographer must be attributed.
+      li (v) No use can in any way depict the model (if any) in a sensitive, unflattering, or controversial way.
+      li (vi) No creation of derivative work
+      li (vii) The license can be terminated by a one month written notice after the expiry of the first six months.
     unless token
       a.btn.btn-primary(href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&scope=read_write") In order to enable license payments, please connect with Stripe
     else
