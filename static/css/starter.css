@@ -130,4 +130,6 @@ h3 {
     color: #272822;
 }
 
-
+ol.terms-list {
+    list-style-type: lower-roman;
+}
