@@ -1,5 +1,4 @@
-from app import config
-from flask import Flask
+from copyright import app
 from flask.ext.sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy(app)

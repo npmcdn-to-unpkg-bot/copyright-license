@@ -2,9 +2,8 @@
 
 if [ "$FLASK_ENV" == "development" ]; then
     echo 'dev mode'
-    python copyright.py
+    python run.py
 else
     echo 'prod mode'
     gunicorn copyright:app --log-file=-
 fi
-

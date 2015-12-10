@@ -1,10 +1,8 @@
-from app import config
-from app import models
+from copyright import app
+from copyright.models import LicenseTerms, PaymentAmount, LicenseReceipt
 
-from flask import Flask
 from flask import render_template
 from flask import request
-from flask.ext.sqlalchemy import SQLAlchemy
 
 @app.route('/')
 def index():
