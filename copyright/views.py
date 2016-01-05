@@ -2,7 +2,7 @@ from copyright import app
 from copyright.models import db, LicenseTerms, PaymentAmount, LicenseReceipt
 from copyright.config import stripe_keys
 
-import requests, datetime
+import requests, datetime, stripe
 from flask import render_template, request
 
 @app.route('/')

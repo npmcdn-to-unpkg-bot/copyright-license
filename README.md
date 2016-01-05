@@ -10,8 +10,12 @@ Code the Change: Copyright-License Project
 All of the commands should be run via Terminal (Mac) or Command Prompt / Git Bash (Windows). For Windows, sometimes it is more convenient to use one over the other, and I have indicated as such in these instructions.
 
 1. Create GitHub and Heroku accounts, and request access from Chris Yeh (chrisyeh@stanford.edu).
-2. Install Python 2.7 (with pip). If you are running Windows, you may need to [add Python to your PATH](http://superuser.com/questions/143119/how-to-add-python-to-the-windows-path).
+2. Install Python 2.7 (with pip).
+  * Mac: Python might already be installed, in which case you can skip this step.
+  * Windows: be sure to [add Python to your PATH](http://superuser.com/questions/143119/how-to-add-python-to-the-windows-path).
+  * Make sure that the path to Python's installation directory contains no spaces. Otherwise bad things will happen.
 3. Install git, and clone this repository.
+  * Make sure that the path to the folder where you clone this repo contains no spaces. Otherwise bad things will happen (namely, virtualenv won't work).
 4. Install virtualenv (`pip install virtualenv`)
 5. Install PostgresSQL (and add it to your PATH)
 6. Setup / install Heroku by following the steps in Heroku's [Getting Started Guide](https://devcenter.heroku.com/articles/getting-started-with-python).
