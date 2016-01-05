@@ -1,5 +1,5 @@
 from copyright import app
-from copyright.models import LicenseTerms, PaymentAmount, LicenseReceipt
+from copyright.models import db, LicenseTerms, PaymentAmount, LicenseReceipt
 from copyright.config import stripe_keys
 
 import requests, datetime
