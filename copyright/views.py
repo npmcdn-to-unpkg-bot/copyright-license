@@ -2,9 +2,8 @@ from copyright import app
 from copyright.models import LicenseTerms, PaymentAmount, LicenseReceipt
 from copyright.config import stripe_keys
 
-import requests
-from flask import render_template
-from flask import request
+import requests, datetime
+from flask import render_template, request
 
 @app.route('/')
 def index():
