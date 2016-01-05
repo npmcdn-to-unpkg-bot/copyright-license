@@ -1,5 +1,6 @@
 from copyright import app
 from copyright.models import LicenseTerms, PaymentAmount, LicenseReceipt
+from copyright.config import stripe_keys
 
 from flask import render_template
 from flask import request
