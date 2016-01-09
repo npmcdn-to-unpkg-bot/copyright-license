@@ -134,6 +134,12 @@ ol.terms-list {
     list-style-type: lower-roman;
 }
 
+/* Responsive image layout on home page
+   ====================================
+   - bottom-aligned horizontally centered images
+   - source: ttp://stackoverflow.com/questions/299870/
+*/
+
 .block {
   height: 260px;
   padding: 0 20px 20px;

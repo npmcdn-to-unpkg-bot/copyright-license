@@ -59,6 +59,11 @@ All of the commands should be run via Terminal (Mac) or Command Prompt / Git Bas
   * [A non-magical introduction to Pip and Virtualenv for Python beginners](http://www.dabapps.com/blog/introduction-to-pip-and-virtualenv-python/)
     * easy to understand
     * uses Mac / Linux commands, so Windows users should refer to the user guide
+* Complete Beginning to End Tutorials for running Flask and PostgreSQL on Heroku
+  * [Flask and PostgreSQL on Heroku](http://blog.y3xz.com/blog/2012/08/16/flask-and-postgresql-on-heroku)
+  * [Making a Flask app using a PostgreSQL database and deploying to Heroku](http://blog.sahildiwan.com/posts/flask-and-postgresql-app-deployed-on-heroku/)
+  * [Flask web application development](http://www.vertabelo.com/blog/technical-articles/web-app-development-with-flask-sqlalchemy-bootstrap-introduction)
+  * [Flask by Example](https://realpython.com/blog/python/flask-by-example-part-1-project-setup/)
 * SSH into heroku: `heroku run bash`
 
 
