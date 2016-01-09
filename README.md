@@ -27,7 +27,7 @@ All of the commands should be run via Terminal (Mac) or Command Prompt / Git Bas
   * Make sure your current directory is `../copyright-license`
   * Create the virtual environment: `virtualenv env`
   * Activate the virtual environment
-    * Windows (using Git Bash): `source env\Scripts\activate`
+    * Windows (using Git Bash): `source env/Scripts/activate`
     * Windows (using Command Prompt): `env\Scripts\activate`
     * Mac OSX / Linux: `source env/bin/activate`
   * Install the required Python packages into the virtual environment: `pip install -r requirements.txt`
