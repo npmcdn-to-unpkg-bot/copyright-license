@@ -60,3 +60,8 @@ All of the commands should be run via Terminal (Mac) or Command Prompt / Git Bas
     * easy to understand
     * uses Mac / Linux commands, so Windows users should refer to the user guide
 * SSH into heroku: `heroku run bash`
+
+
+## Troubleshooting
+* virtualenv seems to be not working?
+  * Have you renamed the virtualenv folder recently? If so, you have to re-setup the virtualenv directory.

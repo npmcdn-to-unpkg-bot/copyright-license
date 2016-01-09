@@ -1,10 +1,12 @@
 extends ./header.jade
 block content
   .container.starter-template
-    p.lead For Consumers: Purchase a License
+    p.lead Purchase a License to Use an Image
     if licenses
       for license in licenses
-        img.img-responsive.margin-centering(src="#{license.image_url}")
-        form.margin-centering(action="/purchase/#{license.id}")
-          input.btn.btn-primary(type="submit", value="Purchase")
-        br
+        div.col-xs-12.col-sm-6.col-md-4.col-lg-3.block
+          div.image-block-wrapper
+            div.image-block
+              img(src="#{license.image_url}")
+          form.margin-centering(action="/purchase/#{license.id}")
+            input.btn.btn-primary(type="submit", value="Purchase License")
