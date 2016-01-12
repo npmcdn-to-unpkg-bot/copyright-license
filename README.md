@@ -33,12 +33,23 @@ All of the commands should be run via Terminal (Mac) or Command Prompt / Git Bas
   * Install the required Python packages into the virtual environment: `pip install -r requirements.txt`
   * You can now deactivate the virtual environment: `deactivate`
   * For more information on how virtualenv works, check out the links under *Random Useful Stuff*
+8. Set up appropriate configuration variables
+  * Option 1 (__Recommended__)
+    * Open Terminal / Command Prompt in the project folder
+    * View the list of configuration variables needed for the app to run: `heroku config`
+    * For each variable in the list, add it to a `.env` file: `heroku config:get CONFIG-VAR-NAME -s >> .env`, where we replace `CONFIG-VAR-NAME` with the variable name.
+      * Example: `heroku config:get API_KEY -s >> .env`
+  * Option 2 (_Only if option 1 doesn't work_)
+    * For each configuration variable in `copyright\config.py`, set it to the value that shows up when you run `heroku config`
+    * Comment out anything that starts with `os.environ.get(...)`
+    * __IMPORTANT__: Make sure you don't commit the `config.py` file to the repository. We do not want to make our API keys public, especially since they ensure that the communication with the payment system is secure.
 
 
 ### Running the app locally
 1. Activate the virtual environment using the steps above
 2. Run `python run.py` or `heroku local`
-  * I have been having problems running `heroku local` on my on Windows laptop, so if you encounter the same error, that's not your fault.
+  * I sometimes have been having problems running `heroku local` on my on Windows laptop, so if you encounter the same error, that's not your fault.
+  * If you do `python run.py`, then you may have to use Option 2 above to set up the configuration variables.
 3. Open up your web browswer and go to `http://localhost:5000`
 
 

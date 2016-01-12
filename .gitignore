@@ -23,6 +23,9 @@ var/
 # Virtualenv folder
 env/
 
+# Heroku Configuration Variables
+.env
+
 # Other
 *.iml
 .idea
