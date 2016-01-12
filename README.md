@@ -47,9 +47,8 @@ All of the commands should be run via Terminal (Mac) or Command Prompt / Git Bas
 
 ### Running the app locally
 1. Activate the virtual environment using the steps above
-2. Run `python run.py` or `heroku local`
-  * I sometimes have been having problems running `heroku local` on my on Windows laptop, so if you encounter the same error, that's not your fault.
-  * If you do `python run.py`, then you may have to use Option 2 above to set up the configuration variables.
+2. Run `heroku local`
+  * I sometimes have issues running `heroku local` on my on Windows laptop. In this case, try `python run.py`. You may have to use Option 2 above to set up the configuration variables. Just be sure to never commit the API keys to our repo.
 3. Open up your web browswer and go to `http://localhost:5000`
 
 
