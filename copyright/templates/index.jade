@@ -8,5 +8,9 @@ block content
           div.image-block-wrapper
             div.image-block
               img(src="#{license.image_url}")
+          span.image-size 0 x 0
           form.margin-centering(action="/purchase/#{license.id}")
             input.btn.btn-primary(type="submit", value="Purchase License")
+
+block scripts
+  script(src="./static/js/index.js")
