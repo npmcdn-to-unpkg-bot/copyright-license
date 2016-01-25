@@ -1,6 +1,7 @@
 body {
     background: #cccccc;
     margin: 30px auto;
+    overflow-y: scroll;
 }
 
 .margin-centering {
@@ -141,7 +142,7 @@ ol.terms-list {
  * margin-bottom to add a vertical getter
  */
 .masonry-image>img {
-    max-width: 300px;
+    max-width: 350px;
     margin-bottom: 10px;
 }
 

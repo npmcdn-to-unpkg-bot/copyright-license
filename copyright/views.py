@@ -3,18 +3,20 @@ from copyright.models import db, LicenseTerms, PaymentAmount, LicenseReceipt
 from copyright.config import stripe_keys
 
 import requests, datetime, stripe
-from flask import render_template, request
+from flask import render_template, request, jsonify
+from math import ceil
+
+images_per_page = 15
 
 @app.route('/')
 def index():
     licenses = LicenseTerms.query.filter_by().all()
-    return render_template('index.jade', licenses=licenses)
-
+    pages = list(range(1, int(ceil(len(licenses) / float(images_per_page)) + 1)))
+    return render_template('index.jade', licenses=licenses[1:images_per_page], pages=pages)
 
 @app.route('/about')
 def about():
     return render_template('about.jade')
-
 
 @app.route('/charge', methods=['POST'])
 def charge():
@@ -140,6 +142,19 @@ def callback():
     access_key = resp.get('stripe_publishable_key', None)
     return render_template('create.jade', token=token, stripe_username=username, stripe_key=access_key)
 
+@app.route('/page')
+def page():
+    page_num = int(request.args.get('page'))
+    licenses = LicenseTerms.query.filter_by().all()
+    result = []
+    start = (page_num - 1) * images_per_page
+    end = min(page_num * images_per_page, len(licenses))
+    for i in range(start, end):
+        result.append({
+            'id' : licenses[i].id,
+            'url': licenses[i].image_url,
+        })
+    return(jsonify(result=result))
 
 @app.errorhandler(404)
 def page_not_found(error):

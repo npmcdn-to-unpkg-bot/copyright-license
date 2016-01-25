@@ -2,11 +2,23 @@ extends ./header.jade
 block content
   .container.starter-template
     p.lead Click on an image to purchase a license
-    if licenses
-      .masonry-wrapper
-        for license in licenses
-          a.masonry-image(href="/purchase/#{license.id}")
-            img(src="#{license.image_url}")
+
+    nav
+      ul.pagination
+        li
+          a(href="#", aria-label="Previous")
+            span(aria-hidden="true") &laquo;
+        for page in pages
+          li
+            a(href="#")= page
+        li
+          a(href="#", aria-label="Next")
+            span(aria-hidden="true") &raquo;
+
+    .masonry-wrapper
+      for license in licenses
+        a.masonry-image(href="/purchase/#{license.id}")
+          img(src="#{license.image_url}")
 
 block scripts
   script(src="./static/js/index.js")
