@@ -1,16 +1,12 @@
 extends ./header.jade
 block content
   .container.starter-template
-    p.lead Purchase a License to Use an Image
+    p.lead Click on an image to purchase a license
     if licenses
-      for license in licenses
-        div.col-xs-12.col-sm-6.col-md-4.col-lg-3.block
-          div.image-block-wrapper
-            div.image-block
-              img(src="#{license.image_url}")
-          span.image-size 0 x 0
-          form.margin-centering(action="/purchase/#{license.id}")
-            input.btn.btn-primary(type="submit", value="Purchase License")
+      .masonry-wrapper
+        for license in licenses
+          a.masonry-image(href="/purchase/#{license.id}")
+            img(src="#{license.image_url}")
 
 block scripts
   script(src="./static/js/index.js")

@@ -1,5 +1,5 @@
 body {
-    background: white;
+    background: #cccccc;
     margin: 30px auto;
 }
 
@@ -134,33 +134,22 @@ ol.terms-list {
     list-style-type: lower-roman;
 }
 
-/* Responsive image layout on home page
-   ====================================
-   - bottom-aligned horizontally centered images
-   - source: ttp://stackoverflow.com/questions/299870/
-*/
 
-.block {
-  height: 280px;
-  padding: 10px 20px 20px;
-  text-align: center;
+/* ---------- Image styles ---------- */
+/* General image styles
+ * max-width to ensure images don't overwhelm the screen
+ * margin-bottom to add a vertical getter
+ */
+.masonry-image>img {
+    max-width: 300px;
+    margin-bottom: 10px;
 }
 
-.image-block-wrapper {
-  height: 200px;
-  position: relative;
-  margin-bottom: 5px;
-}
-
-.image-block {
-  width: 100%;
-  max-height: 100%;
-  text-align: center;
-  position: absolute;
-  bottom: 0px;
-}
-
-.image-block img {
-  max-height: 200px;
-  max-width: 100%;
+/* Hover interaction
+ * set opacity
+ * add a shadow
+ */
+.masonry-image>img:hover {
+    opacity: .75;
+    box-shadow: 0px 0px 30px #000;
 }

@@ -1,20 +1,31 @@
 /* index.js
  * --------
  * Javascript file for the index page
- * Current functionality:
- *   - Set image size text
+ * - Remove images that don't load
+ * - Apply masonry image layout
  */
 
-// select all images, and upon loading
-$('.image-block>img').one('load', function() {
-	// get the original size of the image in the form 'width x height'
-	var text = this.naturalWidth + ' x ' + this.naturalHeight;
+// call the masonry function to present an image collage
+$(function() {
+	// cache the masonry wrapper
+	var $wrapper = $('.masonry-wrapper');
 
-	// set the image size span text, based on current html structure
-	$(this).parents('.block').find('span.image-size').text(text);
-}).each(function() {
-	// if the load is complete, trigger the load event
-	if (this.complete) {
-		$(this).load();
-	}
+	// upon the images loading, apply the masonry layout
+	$wrapper.imagesLoaded()
+		// for each image
+		.progress(function(instance, image) {
+			// if an image does not load, delete the image 
+			if (!image.isLoaded) {
+				$(image.img).remove();
+			}
+		})
+		// after the non-loading images have been removed
+		.always(function() {
+			// apply the masonry layout
+			$wrapper.masonry({
+				columnWidth: 60,
+				gutter: 5,
+				itemSelector: '.masonry-image'
+			});
+		});
 });
