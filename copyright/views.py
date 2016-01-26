@@ -1,13 +1,13 @@
-from copyright import app, config
+from copyright import app
 from copyright.models import db, LicenseTerms, PaymentAmount, LicenseReceipt
-from copyright.config import stripe_keys
+from copyright.config import stripe_keys, ALLOWED_EXTENSIONS
+from werkzeug import secure_filename
 
 import requests, datetime, stripe
 from flask import render_template, request, jsonify
 from math import ceil
 
 images_per_page = 15
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 @app.route('/')
 def index():
