@@ -91,7 +91,7 @@ def register_license():
     file = request.files['image']
     r = redis.from_url(app.config['REDIS_URL'])
     r.set(file.filename, file.read())
-    url = '/uploads/'+filename
+    url = '/uploads/'+file.filename
     success = True
     justification = ''
 
