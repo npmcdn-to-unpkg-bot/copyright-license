@@ -3,7 +3,7 @@ from copyright.models import db, LicenseTerms, PaymentAmount, LicenseReceipt
 from copyright.config import stripe_keys, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
 
-import requests, datetime, stripe, os
+import requests, datetime, stripe, os, redis
 from flask import render_template, request, jsonify
 from math import ceil
 
@@ -89,9 +89,8 @@ def register_license():
     amount = request.form['amount']
     stripe_user_id = request.form['id']
     file = request.files['image']
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    r = redis.from_url(app.config['REDIS_URL'])
+    r.set(file.filename, file.read())
     url = '/uploads/'+filename
     success = True
     justification = ''
