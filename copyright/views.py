@@ -7,6 +7,7 @@ from flask import render_template, request, jsonify
 from math import ceil
 
 images_per_page = 15
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 @app.route('/')
 def index():
