@@ -170,6 +170,7 @@ def allowed_file(filename):
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     r = redis.from_url(app.config['REDIS_URL'])
-    return Response(response=r.get(filename))
+    return Response(response=r.get(filename),
+                    mimetype="image/jpeg")
     #return send_from_directory(app.config['UPLOAD_FOLDER'],
     #                           filename)
