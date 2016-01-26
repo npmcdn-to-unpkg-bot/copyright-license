@@ -36,9 +36,9 @@ All of the commands should be run via Terminal (Mac) or Command Prompt / Git Bas
 8. Set up appropriate configuration variables
   * Option 1 (__Recommended__)
     * Open Terminal / Command Prompt in the project folder
-    * View the list of configuration variables needed for the app to run: `heroku config`
-    * For each variable in the list, add it to a `.env` file: `heroku config:get CONFIG-VAR-NAME -s >> .env`, where we replace `CONFIG-VAR-NAME` with the variable name.
-      * Example: `heroku config:get API_KEY -s >> .env`
+    * Export all of the variables to a `.env` file: `heroku config -s >> .env`
+    * To view the list of configuration variables needed for the app to run, either open the `.env` file or run: `heroku config`
+    * To view the value of a specific variable: `heroku config:get CONFIG-VAR-NAME -s >> .env`, where we replace `CONFIG-VAR-NAME` with the variable name
   * Option 2 (_Only if option 1 doesn't work_)
     * For each configuration variable in `copyright\config.py`, set it to the value that shows up when you run `heroku config`
     * Comment out anything that starts with `os.environ.get(...)`
@@ -59,6 +59,32 @@ All of the commands should be run via Terminal (Mac) or Command Prompt / Git Bas
 4. Push to Heroku: `git push heroku master`
 5. Check to make sure that it works on our live Heroku app: [copyright-license.herokuapp.com](http://copyright-license.herokuapp.com/). If there are any errors, check the logs: `heroku logs --tail`
 6. Push to GitHub: `git push origin master`
+
+
+### Managing the Database
+* Accessing the database through a python shell
+  1. Open Terminal / Command Prompt in the project folder
+  2. Start a Heroku python shell: `heroku run python`
+  3. Import the database and its tables. e.g.:
+    * `from copyright import app`
+    * `from copyright.models import db, LicenseTerms, PaymentAmount, LicenseReceipt`
+  4. Run the appropriate database commands, e.g.:
+    * `someItemToDelete = LicenseTerms.query.get(1)`
+    * `db.session.delete(someItemToDelete)`
+  5. To commit any changes to the database: `db.session.commit()`
+* Accessing the database through a GUI (Windows or Mac)
+  1. Open pgAdmin, which should have been installed with PostgreSQL
+  2. File -> Add server...
+  3. Enter the database connection information
+    * Option 1: Login to Heroku in your web browser
+      * Choose the `copyright-license` app
+      * Click on the `Heroku Postgres :: Database` add-on
+    * Option 2: Use Terminal / command line
+      * `heroku pg:credentials DATABASE_URL`
+  4. Look for the correct database in the sidebar
+  5. To view and edit the actual data in the database:
+    * Go to `Schemas -> public -> Tables` and choose the table you want to view
+    * Click the icon in the toolbar for viewing table data
 
 
 ### Random Useful Stuff
