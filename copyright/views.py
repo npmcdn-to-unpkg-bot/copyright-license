@@ -3,7 +3,7 @@ from copyright.models import db, LicenseTerms, PaymentAmount, LicenseReceipt
 from copyright.config import stripe_keys, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
 
-import requests, datetime, stripe, os, redis
+import requests, datetime, stripe, os, redis, io
 from flask import render_template, request, jsonify
 from math import ceil
 
@@ -169,5 +169,7 @@ def allowed_file(filename):
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
+    r = redis.from_url(app.config['REDIS_URL'])
+    return sendfile(io.BytesIO(r.get(filename)))
+    #return send_from_directory(app.config['UPLOAD_FOLDER'],
+    #                           filename)
