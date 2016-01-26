@@ -85,10 +85,13 @@ def create():
 
 @app.route('/register', methods=['POST'])
 def register_license():
-    url = request.form['url']
     amount = request.form['amount']
     stripe_user_id = request.form['id']
-
+    file = request.files['image']
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    url = '/uploads/'+filename
     success = True
     justification = ''
 
@@ -159,3 +162,12 @@ def page():
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('404.jade'), 404
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)

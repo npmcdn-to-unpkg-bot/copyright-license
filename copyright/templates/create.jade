@@ -16,11 +16,11 @@ block content
       a.btn.btn-primary(href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&scope=read_write") In order to enable license payments, please connect with Stripe
     else
       p You've authenticated via Stripe Connect as #{stripe_username}. You can create a license below:
-      form#licenseInfo.form-horizontal(action="/register", method="POST")
+      form#licenseInfo.form-horizontal(enctype="multipart/form-data" action="/register", method="POST")
         .form-group
           input(type="hidden", value="#{stripe_username}", name="id")
           label(for="imageInput") Image URL
-          input.form-control#imageInput(type="text", name="url")
+          input.form-control#imageInput(type="file", name="image")
         .form-group
           label.sr-only(for="licensePrice") License Price (minimum 50 cents)
           .input-group
