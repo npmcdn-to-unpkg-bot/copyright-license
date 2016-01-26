@@ -1,4 +1,4 @@
-from copyright import app
+from copyright import app, config
 from copyright.models import db, LicenseTerms, PaymentAmount, LicenseReceipt
 from copyright.config import stripe_keys
 
