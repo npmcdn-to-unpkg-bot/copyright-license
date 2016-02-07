@@ -15,7 +15,7 @@ def index():
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     licenses = []
-    if request.method == 'POST':
+    if request.method == 'POST' and request.form['searchText'] != '':
         searchText = request.form['searchText']
         licenses = LicenseTerms.query.filter(LicenseTerms.description.match(searchText)).all()
     else: # GET
