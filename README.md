@@ -36,7 +36,7 @@ All of the commands should be run via Terminal (Mac) or Command Prompt / Git Bas
 8. Set up appropriate configuration variables
   * Option 1 (__Recommended__)
     * Open Terminal / Command Prompt in the project folder
-    * Export all of the variables to a `.env` file: `heroku config -s >> .env`
+    * Export all of the variables to a `.env` file. This allows `heroku local` to read the proper environment variables: `heroku config -s >> .env`
     * To view the list of configuration variables needed for the app to run, either open the `.env` file or run: `heroku config`
     * To view the value of a specific variable: `heroku config:get CONFIG-VAR-NAME -s >> .env`, where we replace `CONFIG-VAR-NAME` with the variable name
   * Option 2 (_Only if option 1 doesn't work_)

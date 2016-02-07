@@ -1,4 +1,9 @@
 from flask import Flask
-app = Flask(__name__)
+from flask.ext.sqlalchemy import SQLAlchemy
 
-import copyright.views
+app = Flask(__name__)
+app.jinja_env.add_extension('pyjade.ext.jinja.PyJadeExtension')
+
+db = SQLAlchemy(app)
+
+from copyright import views, models

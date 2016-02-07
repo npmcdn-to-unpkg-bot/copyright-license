@@ -1,7 +1,4 @@
-from copyright import app
-from flask.ext.sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy(app)
+from copyright import db
 
 class LicenseTerms(db.Model):
     """
