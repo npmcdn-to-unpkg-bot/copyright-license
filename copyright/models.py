@@ -9,6 +9,7 @@ class LicenseTerms(db.Model):
     owner_stripe_id = db.Column(db.String())
     image_url = db.Column(db.String())
     time_recorded = db.Column(db.DateTime())
+    description = db.Column(db.String())
 
 
 class PaymentAmount(db.Model):

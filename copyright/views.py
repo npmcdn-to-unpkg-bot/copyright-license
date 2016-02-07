@@ -76,11 +76,11 @@ def charge():
 def purchase(term_id):
     license_terms = LicenseTerms.query.get(term_id)
     if not license_terms:
-        return render_template('404.jade')
+        return render_template('404.html')
     payment_amounts = PaymentAmount.query.filter_by(term_id=term_id)
     if not payment_amounts:
-        return render_template('404.jade')
-    return render_template('purchase.jade', terms=license_terms, payments=payment_amounts, api_key=stripe_keys['publishable_key'])
+        return render_template('404.html')
+    return render_template('purchase.html', terms=license_terms, payments=payment_amounts, api_key=stripe_keys['publishable_key'])
 
 
 @app.route('/create')
@@ -92,6 +92,7 @@ def create():
 def register_license():
     amount = request.form['amount']
     stripe_user_id = request.form['id']
+    description = request.form['description']
     file = request.files['image']
     r = redis.from_url(app.config['REDIS_URL'])
     r.set(file.filename, file.read())
@@ -107,6 +108,7 @@ def register_license():
         new.owner_stripe_id = stripe_user_id
         new.image_url = url
         new.time_recorded = datetime.datetime.now()
+        new.description = description
 
         db.session.add(new)
         db.session.commit()

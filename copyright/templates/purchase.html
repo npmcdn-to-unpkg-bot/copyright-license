@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container starter-template">
+  <p class="lead">License This Image For Use on a Blog</p>
+  <div class="row">
+    <div class="col-sm-12"><img src="{{terms.image_url}}" class="img-responsive"/></div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3">Description</div>
+    <div class="col-sm-9">{{terms.description}}</div>
+  </div>
+
+  <form id="purchaseForm" action="/charge" method="POST" class="well">
+    <input type="hidden" value="{{terms.id}}" name="termId"/>
+    <input id="tokenId" type="hidden" value="" name="tokenId"/>
+    <input id="stripeEmail" type="hidden" value="" name="stripeEmail"/>
+    <div class="row">
+      <div class="col-sm-12">
+        <label class="control-label">Will you receive financial benefit directly attributable to the blog?</label>
+        <div class="radio">
+          <label>
+            <input type="radio" name="profitRadios" value="True"/>Yes
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input type="radio" name="profitRadios" value="False"/>No
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <label class="control-label">How many pageviews should this license be active for?</label>
+        {% if payments %}
+          {% for option in payments %}
+            <div class="radio">
+              <label>
+                <input type="radio" class="payment-input" name="paymentAmountId" value="{{option.id}}" data-cents="{{option.cents}}", data-views="{{option.maximum_views}}"/>
+                {{option.minimum_views}} - {{option.maximum_views}} views ({{option.cents}} cents)
+              </label>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <div id="termsToggle" class="btn btn-default">Display Terms</div>
+        <div id="hiddenTerms" style="display: none">
+          <p>The license is subject to the following mandatory terms of use:</p>
+          <ol type="i">
+            <li>The image may be reproduced online only. No physical copy can be made.</li>
+            <li>There are no geographical limitations to the use of the license.</li>
+            <li>The license is non-exclusive, non-transferable, and non-sub-licensable.</li>
+            <li>The photographer must be attributed.</li>
+            <li>No use can in any way depict the model (if any) in a sensitive, unflattering, or controversial way.</li>
+            <li>No creation of derivative work</li>
+            <li>The license can be terminated by a one month written notice after the expiry of the first six months.</li>
+          </ol>         
+        </div>
+      </div>
+    </div>
+  </form>
+  <div id="amount" data-amount='50'></div>
+  <div id="maxViews" data-views='0'></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://checkout.stripe.com/checkout.js"></script>
+  <button id="paymentButton" class="btn btn-default">Agree to Terms and Purchase</button>
+  <script>
+    var handler = StripeCheckout.configure({
+      key: '{{api_key}}',
+      token: function (token) {
+        $('#tokenId').attr('value', token.id);
+        $('#stripeEmail').attr('value', token.email);
+        $('#purchaseForm').submit();
+      }
+    });
+    $('#paymentButton').on('click', function (e) {
+      handler.open({
+        name: 'Purchase a License',
+        description: 'at most ' + $('#maxViews').data('views') + ' views',
+        amount: $('#amount').data('amount')
+      });
+      e.preventDefault();
+    });
+    $(window).on('popstate', function () {
+      handler.close();
+    });
+    
+    
+  </script>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/paymentPage.js"></script>
+{% endblock %}
