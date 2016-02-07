@@ -1,6 +1,5 @@
 from copyright import app, db
 from copyright.models import *
-from copyright.config import stripe_keys, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
 
 import requests, datetime, stripe, os, redis, io
