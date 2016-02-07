@@ -85,7 +85,7 @@ def purchase(term_id):
 
 @app.route('/create')
 def create():
-    return render_template('create.jade', token=None)
+    return render_template('create.html', token=None)
 
 
 @app.route('/register', methods=['POST'])

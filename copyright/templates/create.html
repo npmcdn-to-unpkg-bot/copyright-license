@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container starter-template">
+  <p class="lead">Create a License</p>
+  <p>The license is subject to the following mandatory terms of use:</p>
+  <ol class="terms-list">
+    <li>The image may be reproduced online only. No physical copy can be made.</li>
+    <li>There are no geographical limitations to the use of the license.</li>
+    <li>The license is non-exclusive, non-transferable, and non-sub-licensable.</li>
+    <li>The photographer must be attributed.</li>
+    <li>No use can in any way depict the model (if any) in a sensitive, unflattering, or controversial way.</li>
+    <li>No creation of derivative work</li>
+    <li>The license can be terminated by a one month written notice after the expiry of the first six months.</li>
+  </ol>
+
+  {% if not token %}
+  <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write" class="btn btn-primary">In order to enable license payments, please connect with Stripe</a>
+
+  {% else %}
+  <p>You've authenticated via Stripe Connect as {{stripe_username}}. You can create a license below:</p>
+  <form id="licenseInfo" enctype="multipart/form-data" action="/register" method="POST" class="form-horizontal">
+    <input type="hidden" value="{{stripe_username}}" name="id"/>
+    <div class="form-group">
+      <label for="imageInput">Image URL</label>
+      <input id="imageInput" type="file" name="image" class="form-control"/>
+    </div>
+    <div class="form-group">
+      <label for="licensePrice" class="sr-only">License Price (minimum 50 cents)</label>
+      <div class="input-group">
+        <div class="input-group-addon">cents</div>
+        <input id="licensePrice" type="text" placeholder="Amount" name="amount" class="form-control"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea name="description" class="form-control" rows="3"></textarea>
+    </div>
+    <button class="btn btn-default">Create</button>
+  </form>
+
+  {% endif %}
+
+</div>
+{% endblock %}
