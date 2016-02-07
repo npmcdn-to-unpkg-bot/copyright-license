@@ -80,7 +80,7 @@ def purchase(term_id):
     payment_amounts = PaymentAmount.query.filter_by(term_id=term_id)
     if not payment_amounts:
         return render_template('404.html')
-    return render_template('purchase.html', terms=license_terms, payments=payment_amounts, api_key=stripe_keys['publishable_key'])
+    return render_template('purchase.html', terms=license_terms, payments=payment_amounts, api_key=app.config['STRIPE_PUBLISHABLE_KEY'])
 
 
 @app.route('/create')
@@ -137,7 +137,7 @@ def callback():
     code = request.args.get('code')
     data = {'grant_type': 'authorization_code',
             'client_id': app.config['CLIENT_ID'],
-            'client_secret': stripe_keys['secret_key'],
+            'client_secret': app.config['STRIPE_SECRET_KEY'],
             'code': code}
 
     # Make /oauth/token endpoint POST request
@@ -171,7 +171,7 @@ def page_not_found(error):
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):

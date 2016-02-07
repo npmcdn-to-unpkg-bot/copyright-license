@@ -16,8 +16,5 @@ REDIS_URL = os.environ.get('REDIS_URL')
 # Stripe
 SITE = 'https://connect.stripe.com'
 CLIENT_ID = os.environ.get('CLIENT_ID')
-stripe_keys = {
-    'secret_key': os.environ.get('SECRET_KEY'),
-    'publishable_key': os.environ.get('PUBLISHABLE_KEY')
-}
-stripe.api_key = stripe_keys['secret_key']
+STRIPE_SECRET_KEY = os.environ.get('SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = os.environ.get('PUBLISHABLE_KEY')
