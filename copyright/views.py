@@ -73,7 +73,7 @@ def charge():
             download = True
             justification = "The most likely reason the purchase failed is that you tried to buy your own photo. Try buying a photo someone else uploaded. In the meantime, feel free to download your own photo below."
 
-    return render_template('charge.jade', success=success, justification=justification, url=term.image_url, download=download)
+    return render_template('charge.html', success=success, justification=justification, url=term.image_url, download=download)
 
 
 @app.route('/purchase/<int:term_id>')
@@ -133,7 +133,7 @@ def register_license():
         db.session.add(payment_two)
         db.session.commit()
 
-    return render_template('creation-outcome.jade', success=success, justification=justification)
+    return render_template('creation-outcome.html', success=success, justification=justification)
 
 
 @app.route('/oauth/callback')

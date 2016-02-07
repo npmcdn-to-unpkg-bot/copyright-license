@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container starter-template">
+  {% if success %}
+    <p class="lead">Success! {{ justification }}</p>
+  {% else %}
+    <p class="lead">The attempt to charge you failed. {{ justification }}</p>
+  {% endif %}
+
+  {% if download %}
+    <img id="image" src="{{url}}"/><br/>
+    <a href="{{url}}" download="licensedImage.jpg" class="btn btn-primary">Download Image</a>
+    <p>(If the button does not begin a download, right-click the full image above to download and save it.)</p>
+  {% endif %}
+</div>
+{% endblock %}
