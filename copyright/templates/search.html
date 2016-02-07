@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container starter-template">
+  <p class="lead">Click on an image to purchase a license</p>
+  <nav>
+    <ul class="pagination">
+      <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+        {% for page in pages %}
+        <li><a href="#">{{ page }}</a></li>
+        {% endfor %}
+      </li>
+      <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+    </ul>
+  </nav>
+  <div class="masonry-wrapper">
+    {% for license in licenses %}
+    <a href="/purchase/{{license.id}}" class="masonry-image">
+      <img src="{{license.image_url}}"/>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="./static/js/index.js"></script>
+<script src="https://npmcdn.com/masonry-layout@4.0/dist/masonry.pkgd.min.js"></script>
+<script src="https://npmcdn.com/imagesloaded@4.1/imagesloaded.pkgd.js"></script>
+{% endblock %}

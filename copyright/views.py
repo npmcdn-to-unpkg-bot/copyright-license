@@ -1,5 +1,5 @@
-from copyright import app
-from copyright.models import db, LicenseTerms, PaymentAmount, LicenseReceipt
+from copyright import app, db
+from copyright.models import *
 from copyright.config import stripe_keys, ALLOWED_EXTENSIONS
 from werkzeug import secure_filename
 
@@ -11,13 +11,17 @@ images_per_page = 15
 
 @app.route('/')
 def index():
+    return render_template('index.html')
+
+@app.route('/search')
+def search():
     licenses = LicenseTerms.query.filter_by().all()
     pages = list(range(1, int(ceil(len(licenses) / float(images_per_page)) + 1)))
-    return render_template('index.jade', licenses=licenses[1:images_per_page], pages=pages)
+    return render_template('search.html', licenses=licenses[1:images_per_page], pages=pages)
 
 @app.route('/about')
 def about():
-    return render_template('about.jade')
+    return render_template('about.html')
 
 @app.route('/charge', methods=['POST'])
 def charge():
@@ -161,7 +165,7 @@ def page():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('404.jade'), 404
+    return render_template('404.html'), 404
 
 def allowed_file(filename):
     return '.' in filename and \

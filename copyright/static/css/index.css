@@ -1,0 +1,33 @@
+html { 
+  background: url(/static/images/el_capitan.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+body {
+  background: transparent !important;
+}
+
+#searchForm {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 400px;
+}
+
+#searchForm .input-group {
+  background-color: white;
+  box-shadow: 0 0 3px 10px white;
+}
+
+#searchBox {
+  font: 18px "Segoe UI",Arial,Helvetica,sans-serif;
+}
+
+div.attribution {
+  background-color: white;
+  position: absolute;
+  bottom: 0;
+}

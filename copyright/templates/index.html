@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/css/index.css">
+{% endblock %}
+
+{% block content %}
+<form id="searchForm" action="/search" method="GET" name="search">
+  <div class="input-group">
+    <input id="searchBox" type="text" class="form-control" size="50">
+    <span class="input-group-btn">
+      <button class="btn btn-default" type="submit">
+        <i class="fa fa-search"></i>
+      </button>
+    </span>
+  </div>
+</form>
+<div class="attribution">
+  Photo by <a href="https://flic.kr/p/pfSAKL">Mr. Nixter</a>
+</div>
+{% endblock %}
