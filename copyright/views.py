@@ -147,7 +147,7 @@ def callback():
     token = resp.get('access_token', None)
     username = resp.get('stripe_user_id', "(Didn't get an ID from Stripe)")
     access_key = resp.get('stripe_publishable_key', None)
-    return render_template('create.jade', token=token, stripe_username=username, stripe_key=access_key)
+    return render_template('create.html', token=token, stripe_username=username, stripe_key=access_key)
 
 @app.route('/page')
 def page():
