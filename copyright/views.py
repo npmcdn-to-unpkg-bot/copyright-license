@@ -12,11 +12,16 @@ images_per_page = 15
 def index():
     return render_template('index.html')
 
-@app.route('/search')
+@app.route('/search', methods=['GET', 'POST'])
 def search():
-    licenses = LicenseTerms.query.filter_by().all()
+    licenses = []
+    if request.method == 'POST':
+        searchText = request.form['searchText']
+        licenses = LicenseTerms.query.filter(LicenseTerms.description.match(searchText)).all()
+    else: # GET
+        licenses = LicenseTerms.query.filter_by().all()
     pages = list(range(1, int(ceil(len(licenses) / float(images_per_page)) + 1)))
-    return render_template('search.html', licenses=licenses[1:images_per_page], pages=pages)
+    return render_template('search.html', licenses=licenses[0:images_per_page], pages=pages)
 
 @app.route('/about')
 def about():

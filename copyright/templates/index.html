@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block content %}
-<form id="searchForm" action="/search" method="GET" name="search">
+<form id="searchForm" action="/search" method="post" name="search">
   <div class="input-group">
-    <input id="searchBox" type="text" class="form-control" size="50">
+    <input name="searchText" type="text" class="form-control">
     <span class="input-group-btn">
       <button class="btn btn-default" type="submit">
         <i class="fa fa-search"></i>
