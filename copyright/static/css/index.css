@@ -1,13 +1,18 @@
-html { 
-  background: url(/static/images/el_capitan.jpg) no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+html, body {
+  height: 100%;
 }
 
-body {
-  background: transparent !important;
+#content { 
+  /* full-screen background */
+  height: 100%;
+  background-image: url(/static/images/el_capitan.jpg);
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat; 
+  background-attachment: fixed;
+  
+  /* enable absolute positioning of searchForm */
+  position: relative;
 }
 
 #searchForm {
@@ -15,6 +20,7 @@ body {
   top: 20%;
   left: 10%;
   width: 400px;
+  max-width: 80%;
 }
 
 #searchForm .input-group {
@@ -26,8 +32,9 @@ body {
   font: 18px "Segoe UI",Arial,Helvetica,sans-serif;
 }
 
-div.attribution {
+#attribution {
   background-color: white;
   position: absolute;
   bottom: 0;
+  padding: 2px 5px;
 }
