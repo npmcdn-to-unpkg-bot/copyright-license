@@ -24,7 +24,7 @@ function upload_file(file, signed_request, url) {
  ******/
 function get_signed_request(file){
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", "/sign_s3?file_name="+file.name+"&file_type="+file.type);
+  xhr.open("GET", "../sign_s3?file_name="+file.name+"&file_type="+file.type);
   console.log("Opened GET request to sign the S3 upload request");
   xhr.onreadystatechange = function(){
     if(xhr.readyState === 4){
