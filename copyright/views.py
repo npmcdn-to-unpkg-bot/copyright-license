@@ -100,7 +100,7 @@ def create():
     return render_template('create.html', token=None)
 
 
-@app.route('/sign_s3/')
+@app.route('/sign_s3')
 def sign_s3():
     print "------------------------------------"
     print "--------Now in sign_s3()------------"
