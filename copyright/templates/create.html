@@ -24,7 +24,7 @@
     <input id="imageInput" type="file" class="form-control"/>
   </div>
   <img id="preview" src="/static/default.png" />
-  
+
   <form id="licenseInfo" enctype="multipart/form-data" action="/register" method="POST" class="form-horizontal">
     <input type="hidden" value="{{stripe_username}}" name="id"/>
     <input type="hidden" id="image_url" name="image_url" value="/static/default.png" />
@@ -47,5 +47,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="./static/js/upload.js"></script>
+<script type="text/javascript" src="./static/js/upload.js"></script>
 {% endblock %}

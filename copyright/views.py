@@ -136,6 +136,7 @@ def register_license():
     # r.set(file.filename, file.read())
     # url = '/uploads/'+file.filename
     url = request.form['image_url']
+    print url
     success = True
     justification = ''
 
