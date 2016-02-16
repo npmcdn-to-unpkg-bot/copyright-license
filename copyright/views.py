@@ -2,7 +2,7 @@ from copyright import app, db
 from copyright.models import *
 from werkzeug import secure_filename
 
-import requests, datetime, stripe, os, redis, io
+import requests, datetime, stripe, redis, io
 from flask import render_template, request, jsonify, send_file, Response
 from math import ceil
 
@@ -106,9 +106,9 @@ def sign_s3():
     print "--------Now in sign_s3()------------"
     print "------------------------------------"
 
-    AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY')
-    AWS_SECRET_KEY = os.environ.get('AWS_SECRET_KEY')
-    S3_BUCKET = os.environ.get('S3_BUCKET')
+    AWS_ACCESS_KEY = app.config['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_KEY = app.config['AWS_SECRET_ACCESS_KEY']
+    S3_BUCKET = app.config['S3_BUCKET_NAME']
 
     object_name = urllib.quote_plus(request.args.get('file_name'))
     mime_type = urllib.quote_plus(request.args.get('file_type'))
