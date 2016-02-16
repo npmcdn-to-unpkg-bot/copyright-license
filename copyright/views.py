@@ -104,7 +104,7 @@ def create():
 def sign_s3():
     AWS_ACCESS_KEY = app.config['AWS_ACCESS_KEY_ID']
     AWS_SECRET_KEY = app.config['AWS_SECRET_ACCESS_KEY']
-    S3_BUCKET = app.config['S3_BUCKET_NAME']
+    S3_BUCKET = app.config['AWS_S3_BUCKET_NAME']
 
     object_name = urllib.quote_plus(request.args.get('file_name'))
     mime_type = request.args.get('file_type')
