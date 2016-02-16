@@ -19,12 +19,15 @@
 
   {% else %}
   <p>You've authenticated via Stripe Connect as {{stripe_username}}. You can create a license below:</p>
+  <div class="form-group">
+    <label for="imageInput">Image File</label>
+    <input id="imageInput" type="file" class="form-control"/>
+  </div>
+  <img id="preview" src="/static/default.png" />
+  
   <form id="licenseInfo" enctype="multipart/form-data" action="/register" method="POST" class="form-horizontal">
     <input type="hidden" value="{{stripe_username}}" name="id"/>
-    <div class="form-group">
-      <label for="imageInput">Image URL</label>
-      <input id="imageInput" type="file" name="image" class="form-control"/>
-    </div>
+    <input type="hidden" id="image_url" name="image_url" value="/static/default.png" />
     <div class="form-group">
       <label for="licensePrice" class="sr-only">License Price (minimum 50 cents)</label>
       <div class="input-group">
@@ -38,8 +41,11 @@
     </div>
     <button class="btn btn-default">Create</button>
   </form>
-
   {% endif %}
 
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="./static/js/upload.js"></script>
 {% endblock %}
