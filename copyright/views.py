@@ -102,6 +102,8 @@ def create():
 
 @app.route('/sign_s3/')
 def sign_s3():
+    print "In sign_s3()"
+
     AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY')
     AWS_SECRET_KEY = os.environ.get('AWS_SECRET_KEY')
     S3_BUCKET = os.environ.get('S3_BUCKET')

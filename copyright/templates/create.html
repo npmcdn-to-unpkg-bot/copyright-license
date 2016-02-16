@@ -23,11 +23,11 @@
     <label for="imageInput">Image File</label>
     <input id="imageInput" type="file" class="form-control"/>
   </div>
-  <img id="preview" src="/static/default.png" />
+  <img id="preview" src="../static/images/default.png" />
 
   <form id="licenseInfo" enctype="multipart/form-data" action="/register" method="POST" class="form-horizontal">
     <input type="hidden" value="{{stripe_username}}" name="id"/>
-    <input type="hidden" id="image_url" name="image_url" value="/static/default.png" />
+    <input type="hidden" id="image_url" name="image_url" value="../static/images/default.png" />
     <div class="form-group">
       <label for="licensePrice" class="sr-only">License Price (minimum 50 cents)</label>
       <div class="input-group">
@@ -47,5 +47,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" src="./static/js/upload.js"></script>
+{% if token %}
+  <script type="text/javascript" src="../static/js/upload.js"></script>
+{% endif %}
 {% endblock %}
