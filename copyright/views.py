@@ -102,14 +102,16 @@ def create():
 
 @app.route('/sign_s3/')
 def sign_s3():
-    print "In sign_s3()"
+    print "------------------------------------"
+    print "--------Now in sign_s3()------------"
+    print "------------------------------------"
 
     AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY')
     AWS_SECRET_KEY = os.environ.get('AWS_SECRET_KEY')
     S3_BUCKET = os.environ.get('S3_BUCKET')
 
     object_name = urllib.quote_plus(request.args.get('file_name'))
-    mime_type = request.args.get('file_type')
+    mime_type = urllib.quote_plus(request.args.get('file_type'))
 
     expires = int(time.time()+60*60*24)
     amz_headers = "x-amz-acl:public-read"
