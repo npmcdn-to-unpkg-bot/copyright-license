@@ -10,7 +10,7 @@ window.onload = function() {
         var cents = $(this).data('cents');
         var maxViews = $(this).data('views');
         $('#displayAmount').text('Amount is ' + cents + ' cents');
-        $('#displayAmount').removeClass("hidden");
+        $('#displayAmountWrapper').removeClass("hidden");
         $('#amount').data('amount', cents);
         $('#maxViews').data('views', maxViews);
     });

@@ -1,49 +1,57 @@
 {% extends "base.html" %}
 
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+{% endblock %}
+
 {% block content %}
 <div class="container starter-template">
   <p class="lead">License This Image For Use on a Blog</p>
-  <div class="row">
-    <div class="col-sm-12"><img src="{{terms.image_url}}" class="img-responsive"/></div>
-  </div>
-  <div class="row">
-    <div class="col-sm-3">Description</div>
-    <div class="col-sm-9">{{terms.description}}</div>
-  </div>
+  
 
   <form id="purchaseForm" action="/charge" method="POST" class="well">
-    <input type="hidden" value="{{terms.id}}" name="termId"/>
-    <input id="tokenId" type="hidden" value="" name="tokenId"/>
-    <input id="stripeEmail" type="hidden" value="" name="stripeEmail"/>
-    <div class="row">
-      <div class="col-sm-12">
-        <label class="control-label">Will you receive financial benefit directly attributable to the blog?</label>
-        <div class="radio">
-          <label>
-            <input type="radio" name="profitRadios" value="True"/>Yes
-          </label>
-        </div>
-        <div class="radio">
-          <label>
-            <input type="radio" name="profitRadios" value="False"/>No
-          </label>
-        </div>
+    <!-- Hidden Fields -->
+    <input type="hidden" value="{{terms.id}}" name="termId">
+    <input id="tokenId" type="hidden" value="" name="tokenId">
+    <input id="stripeEmail" type="hidden" value="" name="stripeEmail">
+
+    <!-- Pre-filled Fields -->
+    <div id="preview" class="form-group">
+      <img src="{{terms.image_url}}" class="img-responsive">
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <p class="form-control-static">{{terms.description}}</p>
+    </div>
+    <div class="form-group">
+      <label>Owner Stripe ID</label>
+      <p class="form-control-static">{{terms.owner_stripe_id}}</p>
+    </div>
+
+    <!-- Commercial -->
+    <div class="form-group">
+      <label>Will you receive financial benefit directly attributable to the blog?</label>
+      <div class="radio">
+        <label><input type="radio" name="profitRadios" value="True">Yes</label>
+      </div>
+      <div class="radio">
+        <label><input type="radio" name="profitRadios" value="False">No</label>
       </div>
     </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <label class="control-label">How many pageviews should this license be active for?</label>
-        {% if payments %}
-          {% for option in payments %}
-            <div class="radio">
-              <label>
-                <input type="radio" class="payment-input" name="paymentAmountId" value="{{option.id}}" data-cents="{{option.cents}}", data-views="{{option.maximum_views}}"/>
-                {{option.minimum_views}} - {{option.maximum_views}} views ({{option.cents}} cents)
-              </label>
-            </div>
-          {% endfor %}
-        {% endif %}
+
+    <!-- Page Views -->
+    <div class="form-group">
+      <label>How many pageviews should this license be active for?</label>
+      {% if payments %}
+      {% for option in payments %}
+      <div class="radio">
+        <label>
+          <input type="radio" class="payment-input" name="paymentAmountId" value="{{option.id}}" data-cents="{{option.cents}}", data-views="{{option.maximum_views}}"/>
+          {{option.minimum_views}} - {{option.maximum_views}} views ({{option.cents}} cents)
+        </label>
       </div>
+      {% endfor %}
+      {% endif %}
     </div>
     <div class="row">
       <div class="col-sm-12">
@@ -62,8 +70,14 @@
         </div>
       </div>
     </div>
+
+    <!-- License Cost -->
+    <div id="displayAmountWrapper" class="form-group hidden">
+      <label>License Cost</label>
+      <p id="displayAmount" class="form-control-static"></p>
+    </div>
   </form>
-  <div id="displayAmount" class="hidden"></div>
+  
   <div id="amount" data-amount='50'></div>
   <div id="maxViews" data-views='0'></div>
   <script src="https://checkout.stripe.com/checkout.js"></script>

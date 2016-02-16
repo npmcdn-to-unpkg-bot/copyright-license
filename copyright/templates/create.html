@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+{% endblock %}
+
 {% block content %}
 <div class="container starter-template">
   <p class="lead">Create a License</p>
@@ -19,27 +23,38 @@
 
   {% else %}
   <p>You've authenticated via Stripe Connect as {{stripe_username}}. You can create a license below:</p>
-  <div class="form-group">
-    <label for="imageInput">Image File</label>
-    <input id="imageInput" type="file" class="form-control"/>
-  </div>
-  <img id="preview" src="../static/images/default.png" />
+  <form id="licenseInfo" enctype="multipart/form-data" action="/register" method="POST">
 
-  <form id="licenseInfo" enctype="multipart/form-data" action="/register" method="POST" class="form-horizontal">
-    <input type="hidden" value="{{stripe_username}}" name="id"/>
-    <input type="hidden" id="image_url" name="image_url" value="../static/images/default.png" />
+    <!-- Upload Image -->
     <div class="form-group">
-      <label for="licensePrice" class="sr-only">License Price (minimum 50 cents)</label>
+      <label for="imageInput">Image File</label>
+      <input id="imageInput" type="file">
+    </div>
+    <div id="preview">
+      <img class="img-responsive" src="../static/images/default.png">
+    </div>
+    <input type="hidden" id="image_url" name="image_url" value="../static/images/default.png" />
+
+    <!-- Stripe -->
+    <input type="hidden" value="{{stripe_username}}" name="id"/>
+    
+    <!-- Price -->
+    <div class="form-group">
+      <label for="licensePrice">Price</label>
       <div class="input-group">
+        <input id="licensePrice" type="text" placeholder="Amount" name="amount">
         <div class="input-group-addon">cents</div>
-        <input id="licensePrice" type="text" placeholder="Amount" name="amount" class="form-control"/>
       </div>
     </div>
+
+    <!-- Description -->
     <div class="form-group">
       <label for="description">Description</label>
       <textarea name="description" class="form-control" rows="3"></textarea>
     </div>
-    <button class="btn btn-default">Create</button>
+
+    <!-- Submit -->
+    <button type="submit" class="btn btn-default">Create</button>
   </form>
   {% endif %}
 
