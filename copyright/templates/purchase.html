@@ -48,7 +48,7 @@
     <div class="row">
       <div class="col-sm-12">
         <div id="termsToggle" class="btn btn-default">Display Terms</div>
-        <div id="hiddenTerms" style="display: none">
+        <div id="hiddenTerms">
           <p>The license is subject to the following mandatory terms of use:</p>
           <ol type="i">
             <li>The image may be reproduced online only. No physical copy can be made.</li>
@@ -63,9 +63,9 @@
       </div>
     </div>
   </form>
+  <div id="displayAmount" class="hidden"></div>
   <div id="amount" data-amount='50'></div>
   <div id="maxViews" data-views='0'></div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="https://checkout.stripe.com/checkout.js"></script>
   <button id="paymentButton" class="btn btn-default">Agree to Terms and Purchase</button>
   <script>
@@ -88,8 +88,6 @@
     $(window).on('popstate', function () {
       handler.close();
     });
-    
-    
   </script>
 </div>
 

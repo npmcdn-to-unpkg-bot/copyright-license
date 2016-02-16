@@ -1,5 +1,7 @@
 window.onload = function() {
 
+    $("#hiddenTerms").hide();
+
     $("#termsToggle").click(function() {
         $("#hiddenTerms").toggle();
     });
@@ -7,10 +9,10 @@ window.onload = function() {
     $(".payment-input").on('change', function() {
         var cents = $(this).data('cents');
         var maxViews = $(this).data('views');
-        $('#displayedAmount').text('Amount is ' + cents + ' cents');
+        $('#displayAmount').text('Amount is ' + cents + ' cents');
+        $('#displayAmount').removeClass("hidden");
         $('#amount').data('amount', cents);
         $('#maxViews').data('views', maxViews);
-        $('#paymentButton').show();
     });
 
 };

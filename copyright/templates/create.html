@@ -15,7 +15,7 @@
   </ol>
 
   {% if not token %}
-  <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write" class="btn btn-primary">In order to enable license payments, please connect with Stripe</a>
+  <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write"><img src="/static/images/stripe.png"></a>
 
   {% else %}
   <p>You've authenticated via Stripe Connect as {{stripe_username}}. You can create a license below:</p>
