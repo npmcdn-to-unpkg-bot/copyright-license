@@ -4,6 +4,8 @@
  ******/
 function upload_file(file, signed_request, url) {
   var xhr = new XMLHttpRequest();
+  console.log("Signed Request");
+  console.log(signed_request)
   xhr.open("PUT", signed_request);
   xhr.setRequestHeader('x-amz-acl', 'public-read');
   xhr.onload = function() {
