@@ -4,12 +4,9 @@
  ******/
 function upload_file(file, signed_request, url) {
   var xhr = new XMLHttpRequest();
-  console.log("Signed Request: " + signed_request);
-  console.log("URL: " + url);
   xhr.open("PUT", signed_request);
   xhr.setRequestHeader('x-amz-acl', 'public-read');
   xhr.onload = function() {
-    console.log("XHR Status: " + xhr.status);
     if (xhr.status === 200) {
       document.getElementById("preview").src = url;            
       document.getElementById("image_url").value = url;
@@ -28,7 +25,6 @@ function upload_file(file, signed_request, url) {
 function get_signed_request(file){
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "../sign_s3?file_name="+file.name+"&file_type="+file.type);
-  console.log("Opened GET request to sign the S3 upload request");
   xhr.onreadystatechange = function(){
     if(xhr.readyState === 4){
       if(xhr.status === 200){
@@ -50,13 +46,10 @@ function get_signed_request(file){
 function init_upload(){
   var files = document.getElementById("imageInput").files;
   var file = files[0];
-  console.log("File:");
-  console.log(file);
   if(file == null){
     alert("No file selected.");
     return;
   }
-  console.log("About to get signed request...")
   get_signed_request(file);
 }
 
@@ -65,5 +58,4 @@ function init_upload(){
  ******/
 (function() {
   document.getElementById("imageInput").onchange = init_upload;
-  console.log("Bound listener");
 })();
