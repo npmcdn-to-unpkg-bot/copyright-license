@@ -50,6 +50,8 @@ function get_signed_request(file){
 function init_upload(){
   var files = document.getElementById("imageInput").files;
   var file = files[0];
+  console.log("File:");
+  console.log(file);
   if(file == null){
     alert("No file selected.");
     return;

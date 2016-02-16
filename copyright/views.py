@@ -111,7 +111,7 @@ def sign_s3():
     S3_BUCKET = app.config['S3_BUCKET_NAME']
 
     object_name = urllib.quote_plus(request.args.get('file_name'))
-    mime_type = urllib.quote_plus(request.args.get('file_type'))
+    mime_type = request.args.get('file_type')
 
     print "FILE NAME = '" + object_name + "'"
     print "MIME TYPE = '" + mime_type + "'"
