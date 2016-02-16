@@ -24,8 +24,8 @@ def login():
 def search():
     licenses = []
     if request.method == 'POST' and request.form['searchText'] != '':
-        searchText = request.form['searchText']
-        licenses = LicenseTerms.query.filter(LicenseTerms.description.match(searchText)).all()
+        searchText = '%' + request.form['searchText'] + '%'
+        licenses = LicenseTerms.query.filter(LicenseTerms.description.like(searchText)).all()
     else: # GET
         licenses = LicenseTerms.query.filter_by().all()
     pages = list(range(1, int(ceil(len(licenses) / float(images_per_page)) + 1)))
