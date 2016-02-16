@@ -2,8 +2,8 @@ from copyright import app, db
 from copyright.models import *
 from werkzeug import secure_filename
 
-import requests, datetime, stripe, redis, io
-from flask import render_template, request, jsonify, send_file, Response
+import requests, datetime, stripe
+from flask import render_template, request, jsonify, Response
 from math import ceil
 
 # required for file upload
@@ -131,12 +131,7 @@ def register_license():
     amount = request.form['amount']
     stripe_user_id = request.form['id']
     description = request.form['description']
-    # file = request.files['image']
-    # r = redis.from_url(app.config['REDIS_URL'])
-    # r.set(file.filename, file.read())
-    # url = '/uploads/'+file.filename
     url = request.form['image_url']
-    print url
     success = True
     justification = ''
 
@@ -176,12 +171,12 @@ def register_license():
 def callback():
     code = request.args.get('code')
     data = {'grant_type': 'authorization_code',
-            'client_id': app.config['CLIENT_ID'],
+            'client_id': app.config['STRIPE_CLIENT_ID'],
             'client_secret': app.config['STRIPE_SECRET_KEY'],
             'code': code}
 
     # Make /oauth/token endpoint POST request
-    url = app.config['SITE'] + app.config['TOKEN_URI']
+    url = app.config['STRIPE_SITE'] + app.config['STRIPE_TOKEN_URI']
     resp = requests.post(url, params=data)
 
     # Grab access_token (use this as your user's API key)
@@ -212,11 +207,3 @@ def page_not_found(error):
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
-
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    r = redis.from_url(app.config['REDIS_URL'])
-    return Response(response=r.get(filename),
-                    mimetype="image/jpeg")
-    #return send_from_directory(app.config['UPLOAD_FOLDER'],
-    #                           filename)
