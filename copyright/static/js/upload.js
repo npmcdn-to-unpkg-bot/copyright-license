@@ -4,11 +4,12 @@
  ******/
 function upload_file(file, signed_request, url) {
   var xhr = new XMLHttpRequest();
-  console.log("Signed Request");
-  console.log(signed_request)
+  console.log("Signed Request: " + signed_request);
+  console.log("URL: " + url);
   xhr.open("PUT", signed_request);
   xhr.setRequestHeader('x-amz-acl', 'public-read');
   xhr.onload = function() {
+    console.log("XHR Status: " + xhr.status);
     if (xhr.status === 200) {
       document.getElementById("preview").src = url;            
       document.getElementById("image_url").value = url;
