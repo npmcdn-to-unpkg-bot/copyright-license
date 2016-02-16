@@ -6,6 +6,10 @@ import requests, datetime, stripe, os, redis, io
 from flask import render_template, request, jsonify, send_file, Response
 from math import ceil
 
+# required for file upload
+from hashlib import sha1
+import time, json, base64, hmac, urllib
+
 images_per_page = 15
 
 @app.route('/')
