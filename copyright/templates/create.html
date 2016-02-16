@@ -23,7 +23,7 @@
 
   {% else %}
   <p>You've authenticated via Stripe Connect as {{stripe_username}}. You can create a license below:</p>
-  <form id="licenseInfo" enctype="multipart/form-data" action="/register" method="POST">
+  <form id="licenseInfo" class="well" enctype="multipart/form-data" action="/register" method="POST">
 
     <!-- Upload Image -->
     <div class="form-group">
@@ -42,7 +42,7 @@
     <div class="form-group">
       <label for="licensePrice">Price</label>
       <div class="input-group">
-        <input id="licensePrice" type="text" placeholder="Amount" name="amount">
+        <input id="licensePrice" class="form-control" type="text" placeholder="Amount" name="amount">
         <div class="input-group-addon">cents</div>
       </div>
     </div>
