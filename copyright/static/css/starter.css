@@ -2,13 +2,6 @@ body {
     background: #cccccc;
     padding-top: 50px; /* height of header */
     box-sizing: border-box;
-    /* margin: 30px auto; */
-    /* overflow-y: scroll; */
-}
-
-.margin-centering {
-    margin: 0 auto;
-    text-align:center;
 }
 
 .starter-template {
@@ -23,22 +16,12 @@ body {
     float: none;
 }
 
-.dataTables_filter input {
-    font-weight: normal;
-    color: rgba(0,0,0,0.65);
-}
-
 h1 {
   color: #262626;
 }
 
 p {
   color: #262626;
-}
-
-span.recipe {
-    color: darkgray;
-    padding-left: 1em;
 }
 
 .fix {
@@ -84,7 +67,6 @@ h3 {
 ol.terms-list {
     list-style-type: lower-roman;
 }
-
 
 /* ---------- Image styles ---------- */
 /* General image styles
