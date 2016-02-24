@@ -1,6 +1,5 @@
 window.onload = function() {
     $(".payment-input").on('change', function() {
-        console.log("change");
         var price = $('#price_base').data('cents');
 
         input_names = ['is_commercial', 'is_derivative'];

@@ -123,6 +123,7 @@ All of the commands should be run via Terminal (Mac) or Command Prompt / Git Bas
   * [Flask web application development](http://www.vertabelo.com/blog/technical-articles/web-app-development-with-flask-sqlalchemy-bootstrap-introduction)
   * [Flask by Example](https://realpython.com/blog/python/flask-by-example-part-1-project-setup/)
   * [Flask Mega-Tutorial](http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world)
+  * [Discover Flask](https://github.com/realpython/discover-flask)
 * SSH into heroku: `heroku run bash`
 
 
