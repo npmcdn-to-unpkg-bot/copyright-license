@@ -107,7 +107,7 @@ def charge():
             db.session.commit()
             success = True
             download = True
-            justification = "You've paid %d cents" % amount
+            justification = "You've paid %d cents" % total_price
         except stripe.InvalidRequestError as e:
             print(e)
             sys.stdout.flush()
