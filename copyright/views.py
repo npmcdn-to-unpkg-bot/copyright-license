@@ -2,13 +2,19 @@ from copyright import app, db
 from copyright.models import *
 from werkzeug import secure_filename
 
-import requests, datetime, stripe
+import requests, datetime, stripe, sys
 from flask import render_template, request, jsonify, Response
 from math import ceil
 
 # required for file upload
 from hashlib import sha1
 import time, json, base64, hmac, urllib
+
+# to print debug statements to Heroku console:
+# import sys
+# print "statemet"
+# sys.stdout.flush()
+# source: http://stackoverflow.com/questions/12504588/
 
 images_per_page = 15
 
@@ -22,14 +28,14 @@ def login():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-    licenses = []
+    images = []
     if request.method == 'POST' and request.form['searchText'] != '':
         searchText = '%' + request.form['searchText'] + '%'
-        licenses = LicenseTerms.query.filter(LicenseTerms.description.like(searchText)).all()
+        images = Image.query.filter(Image.description.like(searchText)).all()
     else: # GET
-        licenses = LicenseTerms.query.filter_by().all()
-    pages = list(range(1, int(ceil(len(licenses) / float(images_per_page)) + 1)))
-    return render_template('search.html', licenses=licenses[0:images_per_page], pages=pages)
+        images = Image.query.filter_by().all()
+    pages = list(range(1, int(ceil(len(images) / float(images_per_page)) + 1)))
+    return render_template('search.html', images=images[0:images_per_page], pages=pages)
 
 @app.route('/about')
 def about():
@@ -38,26 +44,53 @@ def about():
 @app.route('/charge', methods=['POST'])
 def charge():
     print("BEGINNING CHARGE")
-    term_id = request.form['termId']
-    payment_amount_id = request.form['paymentAmountId']
-    for_profit = request.form['profitRadios']
+    sys.stdout.flush()
 
-    term = LicenseTerms.query.get(term_id)
-    selected_payment = PaymentAmount.query.get(payment_amount_id)
+    license_id = request.form['licenseId']
+    license = License.query.get(license_id)
+
+    is_commercial = False
+    if license.allow_commercial:
+        is_commercial = (request.form['is_commercial'] == 'True')
+
+    is_derivative = False
+    if license.allow_derivative:
+        is_derivative = (request.form['is_derivative'] == 'True')
+
+    stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
     customer = stripe.Customer.create(
         email=request.form['stripeEmail'],
         card=request.form['tokenId']
     )
 
-    new = LicenseReceipt()
-    new.term_id = term_id
-    new.time_recorded = datetime.datetime.now()
-    new.user = customer.email
-    new.minimum_views = selected_payment.minimum_views
-    new.maximum_views = selected_payment.maximum_views
+    newReceipt = Receipt()
+    newReceipt.license_id = license_id
+    newReceipt.transaction_date = datetime.datetime.now()
+    newReceipt.is_commercial = is_commercial
+    newReceipt.is_derivative = is_derivative
+    newReceipt.stripe_email = customer.email
 
-    if LicenseReceipt.query.filter_by(term_id=new.term_id, user=new.user).all():
+    # calculate price
+    total_price = license.price_base
+    if is_commercial:
+        total_price += license.price_commercial
+    if is_derivative:
+        total_price += license.price_derivative
+    newReceipt.price = total_price
+
+    # # TODO: change this to adapt to pricing scheme once we have that
+    # amount = 0
+    # if numViews == 'low':
+    #     newReceipt.minimum_views = 0
+    #     newReceipt.maximum_views = 999
+    #     amount = license.price_low
+    # elif numViews == 'high':
+    #     newReceipt.minimum_views = 1000
+    #     newReceipt.maximum_views = -1
+    #     amount = license.price_high
+
+    if Receipt.query.filter_by(license_id=newReceipt.license_id, stripe_email=newReceipt.stripe_email).all():
         success = False
         justification = "You've already purchased a license for this image."
         download = True
@@ -65,34 +98,35 @@ def charge():
         try:
             completed_charge = stripe.Charge.create(
                 customer=customer.id,
-                amount=selected_payment.cents,
+                amount=total_price,
                 currency='usd',
                 description='License Purchase',
-                destination=term.owner_stripe_id
+                destination=license.creator.stripe_id
             )
-            db.session.add(new)
+            db.session.add(newReceipt)
             db.session.commit()
             success = True
             download = True
-            justification = "You've paid %d cents" % selected_payment.cents
+            justification = "You've paid %d cents" % amount
         except stripe.InvalidRequestError as e:
             print(e)
+            sys.stdout.flush()
             success = False
             download = True
-            justification = "The most likely reason the purchase failed is that you tried to buy your own photo. Try buying a photo someone else uploaded. In the meantime, feel free to download your own photo below."
+            justification = "The most likely reason the purchase failed is that you tried to buy your own photo. In the meantime, feel free to download your own photo below. The error message is as follows: " + str(e)
 
-    return render_template('charge.html', success=success, justification=justification, url=term.image_url, download=download)
+    return render_template('charge.html', success=success, justification=justification, url_full=license.image.url_full, download=download)
 
 
-@app.route('/purchase/<int:term_id>')
-def purchase(term_id):
-    license_terms = LicenseTerms.query.get(term_id)
-    if not license_terms:
+@app.route('/purchase/<int:image_id>')
+def purchase(image_id):
+    image = Image.query.get(image_id)
+    if not image:
         return render_template('404.html')
-    payment_amounts = PaymentAmount.query.filter_by(term_id=term_id)
-    if not payment_amounts:
+    license = License.query.filter_by(image_id=image_id).first()
+    if not license:
         return render_template('404.html')
-    return render_template('purchase.html', terms=license_terms, payments=payment_amounts, api_key=app.config['STRIPE_PUBLISHABLE_KEY'])
+    return render_template('purchase.html', image=image, license=license, api_key=app.config['STRIPE_PUBLISHABLE_KEY'])
 
 
 @app.route('/create')
@@ -128,40 +162,60 @@ def sign_s3():
 
 @app.route('/register', methods=['POST'])
 def register_license():
-    amount = request.form['amount']
-    stripe_user_id = request.form['id']
+    stripe_id = request.form['stripe_id']
+    allow_commercial = request.form['allow_commercial']
+    allow_derivative = request.form['allow_derivative']
+    price_base = request.form['price_base']
+    price_commercial = request.form['price_commercial']
+    price_derivative = request.form['price_derivative']
     description = request.form['description']
-    url = request.form['image_url']
+    url_full = request.form['image_url']
     success = True
     justification = ''
 
-    if LicenseTerms.query.filter_by(image_url=url).all():
+    if Image.query.filter_by(url_full=url_full).all():
+        # TODO: if we randomize the image URLs, then we can't do this simple
+        #   check anymore. Perhaps we should consider hashing?
         success = False
         justification = 'That image has already been registered'
     else:
-        new = LicenseTerms()
-        new.owner_stripe_id = stripe_user_id
-        new.image_url = url
-        new.time_recorded = datetime.datetime.now()
-        new.description = description
+        now = datetime.datetime.now()
 
-        db.session.add(new)
-        db.session.commit()
+        # check if user already exists
+        # TODO: once we implement a user login system, this needs to be
+        #   largely redone
+        creator = User.query.filter_by(stripe_id=stripe_id).first()
+        if not creator:
+            creator = User()
+            creator.stripe_id = stripe_id
+            creator.date_created = now
+            creator.active = True
+            db.session.add(creator)
+            db.session.commit()
 
-        payment = PaymentAmount()
-        payment.minimum_views = 0
-        payment.maximum_views = 1000
-        payment.cents = amount
-        payment.term_id = new.id
-        db.session.add(payment)
+        newImage = Image()
+        newImage.creator_id = creator.id
+        newImage.url_full = url_full
+        newImage.url_thumb = url_full # TODO: create separate thumbnail
+        newImage.date_uploaded = now
+        newImage.description = description
+        # newImage.tags = "" # TODO
+        newImage.num_clicks = 0
+        newImage.num_purchases = 0
 
-        payment_two = PaymentAmount()
-        payment_two.minimum_views = 1001
-        payment_two.maximum_views = 10000
-        payment_two.cents = int(amount)*2
-        payment_two.term_id = new.id
+        newLicense = License()
+        newLicense.image = newImage
+        newLicense.creator = creator
+        newLicense.active = True
+        newLicense.date_created = now
+        newLicense.allow_commercial = allow_commercial
+        newLicense.allow_derivative = allow_derivative
+        newLicense.price_base = price_base
+        newLicense.price_commercial = price_commercial
+        newLicense.price_derivative = price_derivative
 
-        db.session.add(payment_two)
+        db.session.add(newImage)
+        db.session.add(newLicense)
         db.session.commit()
 
     return render_template('creation-outcome.html', success=success, justification=justification)
@@ -182,21 +236,21 @@ def callback():
     # Grab access_token (use this as your user's API key)
     resp = resp.json()
     token = resp.get('access_token', None)
-    username = resp.get('stripe_user_id', "(Didn't get an ID from Stripe)")
+    stripe_id = resp.get('stripe_user_id', "(Didn't get an ID from Stripe)")
     access_key = resp.get('stripe_publishable_key', None)
-    return render_template('create.html', token=token, stripe_username=username, stripe_key=access_key)
+    return render_template('create.html', token=token, stripe_id=stripe_id, stripe_key=access_key)
 
 @app.route('/page')
 def page():
     page_num = int(request.args.get('page'))
-    licenses = LicenseTerms.query.filter_by().all()
+    images = Image.query.filter_by().all()
     result = []
     start = (page_num - 1) * images_per_page
-    end = min(page_num * images_per_page, len(licenses))
+    end = min(page_num * images_per_page, len(images))
     for i in range(start, end):
         result.append({
-            'id' : licenses[i].id,
-            'url': licenses[i].image_url,
+            'id' : images[i].id,
+            'url': images[i].url_thumb,
         })
     return(jsonify(result=result))
 

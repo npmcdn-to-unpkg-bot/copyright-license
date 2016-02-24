@@ -19,10 +19,12 @@
   </ol>
 
   {% if not token %}
-  <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write"><img src="/static/images/stripe.png"></a>
+  <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write">
+    <img src="/static/images/stripe.png">
+  </a>
 
   {% else %}
-  <p>You've authenticated via Stripe Connect as {{stripe_username}}. You can create a license below:</p>
+  <p>You've authenticated via Stripe Connect as {{stripe_id}}. You can create a license below:</p>
   <form id="licenseInfo" class="well" enctype="multipart/form-data" action="/register" method="POST">
 
     <!-- Upload Image -->
@@ -34,13 +36,61 @@
     <input type="hidden" id="image_url" name="image_url" value="../static/images/default.png" />
 
     <!-- Stripe -->
-    <input type="hidden" value="{{stripe_username}}" name="id"/>
+    <input type="hidden" value="{{stripe_id}}" name="stripe_id"/>
+
+    <!-- Commercial -->
+    <div class="form-group">
+      <label>Commercial Use</label>
+      <div class="radio">
+        <label>
+          <input type="radio" name="allow_commercial" value="False" checked>
+          Do not allow commercial use of the work
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="allow_commercial" value="True">
+          Allow commercial use of the work
+        </label>
+      </div>
+    </div>
+
+    <!-- Derivative -->
+    <div class="form-group">
+      <label>Derivative Works</label>
+      <div class="radio">
+        <label>
+          <input type="radio" name="allow_derivative" value="False" checked>
+          Do not allow derivative works
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="allow_derivative" value="True">
+          Allow modifications and derivative works
+        </label>
+      </div>
+    </div>
     
     <!-- Price -->
     <div class="form-group">
-      <label for="licensePrice">Price</label>
+      <label for="price_base">Base Price</label>
       <div class="input-group">
-        <input id="licensePrice" class="form-control" type="text" placeholder="Amount" name="amount">
+        <input id="price_base" class="form-control" type="text" placeholder="Amount" name="price_base" value="0">
+        <div class="input-group-addon">cents</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="price_commercial">Additional Charge for Commercial Use</label>
+      <div class="input-group">
+        <input id="price_commercial" class="form-control" type="text" placeholder="Amount" name="price_commercial" value="0">
+        <div class="input-group-addon">cents</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="price_derivative">Additional Charge for Derivative Works</label>
+      <div class="input-group">
+        <input id="price_derivative" class="form-control" type="text" placeholder="Amount" name="price_derivative" value="0">
         <div class="input-group-addon">cents</div>
       </div>
     </div>

@@ -14,9 +14,9 @@
     </ul>
   </nav>
   <div class="masonry-wrapper">
-    {% for license in licenses %}
-    <a href="/purchase/{{license.id}}" class="masonry-image">
-      <img src="{{license.image_url}}"/>
+    {% for image in images %}
+    <a href="/purchase/{{image.id}}" class="masonry-image">
+      <img src="{{image.url_full}}"/>
     </a>
     {% endfor %}
   </div>

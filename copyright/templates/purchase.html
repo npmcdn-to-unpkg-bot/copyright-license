@@ -6,80 +6,85 @@
 
 {% block content %}
 <div class="container starter-template">
-  <p class="lead">License This Image For Use on a Blog</p>
+  <p class="lead">License This Image For Use on a Blog or for an Event</p>
   
-
   <form id="purchaseForm" action="/charge" method="POST" class="well">
     <!-- Hidden Fields -->
-    <input type="hidden" value="{{terms.id}}" name="termId">
+    <input type="hidden" value="{{license.id}}" name="licenseId">
     <input id="tokenId" type="hidden" value="" name="tokenId">
     <input id="stripeEmail" type="hidden" value="" name="stripeEmail">
 
     <!-- Pre-filled Fields -->
     <div class="form-group">
-      <img id="preview" src="{{terms.image_url}}" class="img-responsive">
+      <img id="preview" src="{{image.url_thumb}}" class="img-responsive">
     </div>
     <div class="form-group">
       <label>Description</label>
-      <p class="form-control-static">{{terms.description}}</p>
+      <p class="form-control-static">{{image.description}}</p>
     </div>
     <div class="form-group">
-      <label>Owner Stripe ID</label>
-      <p class="form-control-static">{{terms.owner_stripe_id}}</p>
+      <label>Date Uploaded</label>
+      <p class="form-control-static">{{image.date_uploaded}}</p>
+    </div>
+    <div class="form-group">
+      <label>Creator ID</label>
+      <p class="form-control-static">{{image.creator_id}}</p>
+    </div>
+    <div class="form-group">
+      <label>Attribution</label>
+      <p class="form-control-static">If you use this image, you must give attribution to its owner.</p>
     </div>
 
     <!-- Commercial -->
     <div class="form-group">
-      <label>Will you receive financial benefit directly attributable to the blog?</label>
-      <div class="radio">
-        <label><input type="radio" name="profitRadios" value="True">Yes</label>
-      </div>
-      <div class="radio">
-        <label><input type="radio" name="profitRadios" value="False">No</label>
-      </div>
-    </div>
-
-    <!-- Page Views -->
-    <div class="form-group">
-      <label>How many pageviews should this license be active for?</label>
-      {% if payments %}
-      {% for option in payments %}
+      <label>Commercial Use</label>
+      {% if license.allow_commercial %}
       <div class="radio">
         <label>
-          <input type="radio" class="payment-input" name="paymentAmountId" value="{{option.id}}" data-cents="{{option.cents}}", data-views="{{option.maximum_views}}"/>
-          {{option.minimum_views}} - {{option.maximum_views}} views ({{option.cents}} cents)
+          <input type="radio" class="payment-input" name="is_commercial" value="False" checked>
+          I will only use the photo for non-commercial purposes.
         </label>
       </div>
-      {% endfor %}
+      <div class="radio">
+        <label>
+          <input type="radio" class="payment-input" name="is_commercial" value="True" data-cents="{{license.price_commercial}}">
+          I will use the photo for commercial purposes.
+        </label>
+      </div>
+      {% else %}
+      <p class="form-control-static">Only non-commercial use is allowed</p>
       {% endif %}
     </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <div id="termsToggle" class="btn btn-default">Display Terms</div>
-        <div id="hiddenTerms">
-          <p>The license is subject to the following mandatory terms of use:</p>
-          <ol type="i">
-            <li>The image may be reproduced online only. No physical copy can be made.</li>
-            <li>There are no geographical limitations to the use of the license.</li>
-            <li>The license is non-exclusive, non-transferable, and non-sub-licensable.</li>
-            <li>The photographer must be attributed.</li>
-            <li>No use can in any way depict the model (if any) in a sensitive, unflattering, or controversial way.</li>
-            <li>No creation of derivative work</li>
-            <li>The license can be terminated by a one month written notice after the expiry of the first six months.</li>
-          </ol>         
-        </div>
+
+    <!-- Derivative -->
+    <div class="form-group">
+      <label>Derivative Works and Modifications</label>
+      {% if license.allow_derivative %}
+      <div class="radio">
+        <label>
+          <input type="radio" class="payment-input" name="is_derivative" value="False" checked>
+          I will not create derivative works or modify the original work in any way.
+        </label>
       </div>
+      <div class="radio">
+        <label>
+          <input type="radio" class="payment-input" name="is_derivative" value="True" data-cents="{{license.price_derivative}}">
+          I will create derivative works or modify the original work.
+        </label>
+      </div>
+      {% else %}
+      <p class="form-control-static">No derivative works or modifications to the original work are allowed</p>
+      {% endif %}
     </div>
 
     <!-- License Cost -->
-    <div id="displayAmountWrapper" class="form-group hidden">
+    <div id="displayCostWrapper" class="form-group">
       <label>License Cost</label>
-      <p id="displayAmount" class="form-control-static"></p>
+      <input type="hidden" id="price_base" data-cents="{{license.price_base}}">
+      <p id="displayCost" class="form-control-static" data-cents="{{license.price_base}}">{{license.price_base}}</p>
     </div>
   </form>
   
-  <div id="amount" data-amount='50'></div>
-  <div id="maxViews" data-views='0'></div>
   <script src="https://checkout.stripe.com/checkout.js"></script>
   <button id="paymentButton" class="btn btn-default">Agree to Terms and Purchase</button>
   <script>
@@ -94,8 +99,7 @@
     $('#paymentButton').on('click', function (e) {
       handler.open({
         name: 'Purchase a License',
-        description: 'at most ' + $('#maxViews').data('views') + ' views',
-        amount: $('#amount').data('amount')
+        amount: $('#displayCost').data('cents')
       });
       e.preventDefault();
     });

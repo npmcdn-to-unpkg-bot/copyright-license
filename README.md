@@ -85,6 +85,28 @@ All of the commands should be run via Terminal (Mac) or Command Prompt / Git Bas
   5. To view and edit the actual data in the database:
     * Go to `Schemas -> public -> Tables` and choose the table you want to view
     * Click the icon in the toolbar for viewing table data
+* Database Migrations
+  1. Make sure you are in the virtual environment
+  2. Make appropriate changes to the `models.py` file, which defines the database structure
+  3. Run the migration: `python manage.py db migrate`
+  4. Apply the upgrades to the actual database: `python manage.py db upgrade`
+  5. You may need to run the migration on Heroku as well: `heroku run python manage.py db upgrade`
+* Using a local database
+  1. Create a local database in postgres: [https://youtu.be/fD7x8hd9yE4](https://youtu.be/fD7x8hd9yE4)
+  2. Change `SQLALCHEMY_DATABASE_URI` in `config.py` to  `postgresql://postgres:PASSWORD@localhost/NAME_OF_LOCAL_DB`
+  3. Make sure you are in the virtual environment
+  4. run `python`
+  5. In python, run the following commands:
+    * `from copyright import db`
+    * `db.create_all()`
+  6. You should be good to go! Try running `heroku local`
+  7. Remember to revert back to the original config variables before commiting to git.
+
+
+### Stripe Integration
+* Email Chris to get access to the Stripe Dashboard
+* To have the Stripe authentication redirect to localhost, you can add a `redirect_uri` parameter to the URL in `create.html`. For example, https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write&amp;redirect_uri=http://localhost:5000/oauth/callback
+* Note: this requires that the Stripe API be properly configured. In particular, `http://localhost:5000/oauth/callback` must be added as one of the Redirect URIs under the Stripe Account Settings.
 
 
 ### Random Useful Stuff
