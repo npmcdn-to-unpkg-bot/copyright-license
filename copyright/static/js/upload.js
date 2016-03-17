@@ -1,61 +1,53 @@
-/******
- * Function to carry out the actual PUT request to S3
- * using the signed request from the Python app.
- ******/
-function upload_file(file, signed_request, url) {
-  var xhr = new XMLHttpRequest();
-  xhr.open("PUT", signed_request);
-  xhr.setRequestHeader('x-amz-acl', 'public-read');
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      document.getElementById("preview").src = url;            
-      document.getElementById("image_url").value = url;
-    }
-  };
-  xhr.onerror = function() {
-    alert("Could not upload file."); 
-  };
-  xhr.send(file);
+var fileInput = document.getElementById('fileInput');
+var dropzoneWrapper = document.getElementById('dropzoneWrapper');
+var previewImg = document.getElementById('previewImg');
+var dropzoneDetails = document.getElementById('dropzoneDetails');
+var dropzoneName = document.getElementById('dropzoneName');
+var dropzoneSize = document.getElementById('dropzoneSize');
+
+if (typeof window.FileReader != 'undefined') { // File API available
+  dropzoneWrapper.classList.add('active');
 }
 
-/******
- * Function to get the temporary signed request from the Python app.
- * If request successful, continue to upload the file using this signed request.
- ******/
-function get_signed_request(file){
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", "../sign_s3?file_name="+file.name+"&file_type="+file.type);
-  xhr.onreadystatechange = function(){
-    if(xhr.readyState === 4){
-      if(xhr.status === 200){
-        var response = JSON.parse(xhr.responseText);
-        upload_file(file, response.signed_request, response.url);
-      }
-      else{
-        alert("Could not get signed URL.");
-      }
-    }
-  };
-  xhr.send();
-}
+dropzoneWrapper.ondragenter = function(e) {
+  this.classList.add("drag-hover");
+};
+dropzoneWrapper.ondragover = dropzoneWrapper.ondragenter;
+dropzoneWrapper.ondrop = dropzoneWrapper.ondragenter;
 
-/******
- * Function called when file input updated. If there is a file selected, then
- * start upload procedure by asking for a signed request from the app.
- ******/
-function init_upload(){
-  var files = document.getElementById("imageInput").files;
-  var file = files[0];
-  if(file == null){
-    alert("No file selected.");
-    return;
+dropzoneWrapper.ondragend = function(e) {
+  this.classList.remove("drag-hover");
+};
+dropzoneWrapper.ondragleave = dropzoneWrapper.ondragend;
+
+fileInput.onchange = function(e) {
+  // check to make sure we can use File Reader API
+  if (typeof window.FileReader === 'undefined')
+    return false;
+
+  var reader = new FileReader();
+  reader.onload = function(event) {
+    previewImg.src = reader.result;
+    previewImg.classList.remove('hidden');
+    dropzoneDetails.classList.remove('hidden');
   }
-  get_signed_request(file);
+
+  file = e.target.files[0];
+  if (file) {
+    reader.readAsDataURL(file);
+    dropzoneName.innerHTML = file.name;
+    dropzoneSize.innerHTML = getFileSizeString(file.size);
+  }
 }
 
-/******
- * Bind listeners when the page loads.
- ******/
-(function() {
-  document.getElementById("imageInput").onchange = init_upload;
-})();
+// takes an integer representing the size of a file in bytes
+function getFileSizeString(size) {
+  var i = 0;
+  var byteUnits = ['bytes', 'KB', 'MB', 'GB'];
+  while (size > 1024) {
+    size = size / 1024;
+    i++;
+  }
+
+  return size.toFixed(1) + ' ' + byteUnits[i];
+};

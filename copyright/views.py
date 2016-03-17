@@ -10,9 +10,13 @@ from math import ceil
 from hashlib import sha1
 import time, json, base64, hmac, urllib
 
+import boto
+from PIL import Image as PIL
+import StringIO
+
 # to print debug statements to Heroku console:
 # import sys
-# print "statemet"
+# print "statement"
 # sys.stdout.flush()
 # source: http://stackoverflow.com/questions/12504588/
 
@@ -78,17 +82,6 @@ def charge():
     if is_derivative:
         total_price += license.price_derivative
     newReceipt.price = total_price
-
-    # # TODO: change this to adapt to pricing scheme once we have that
-    # amount = 0
-    # if numViews == 'low':
-    #     newReceipt.minimum_views = 0
-    #     newReceipt.maximum_views = 999
-    #     amount = license.price_low
-    # elif numViews == 'high':
-    #     newReceipt.minimum_views = 1000
-    #     newReceipt.maximum_views = -1
-    #     amount = license.price_high
 
     if Receipt.query.filter_by(license_id=newReceipt.license_id, stripe_email=newReceipt.stripe_email).all():
         success = False
@@ -162,61 +155,98 @@ def sign_s3():
 
 @app.route('/register', methods=['POST'])
 def register_license():
-    stripe_id = request.form['stripe_id']
-    allow_commercial = request.form['allow_commercial']
-    allow_derivative = request.form['allow_derivative']
-    price_base = request.form['price_base']
-    price_commercial = request.form['price_commercial']
-    price_derivative = request.form['price_derivative']
-    description = request.form['description']
-    url_full = request.form['image_url']
+    imageFile = request.files['imageFile']
+
     success = True
     justification = ''
 
-    if Image.query.filter_by(url_full=url_full).all():
-        # TODO: if we randomize the image URLs, then we can't do this simple
-        #   check anymore. Perhaps we should consider hashing?
-        success = False
-        justification = 'That image has already been registered'
-    else:
-        now = datetime.datetime.now()
+    if imageFile and allowed_file(imageFile.filename):
 
-        # check if user already exists
-        # TODO: once we implement a user login system, this needs to be
-        #   largely redone
-        creator = User.query.filter_by(stripe_id=stripe_id).first()
-        if not creator:
-            creator = User()
-            creator.stripe_id = stripe_id
-            creator.date_created = now
-            creator.active = True
-            db.session.add(creator)
+        # get form params
+        stripe_id = request.form['stripe_id']
+        allow_commercial = request.form['allow_commercial']
+        allow_derivative = request.form['allow_derivative']
+        price_base = request.form['price_base']
+        price_commercial = request.form['price_commercial']
+        price_derivative = request.form['price_derivative']
+        description = request.form['description']
+
+        # process image
+        filename_full = secure_filename(imageFile.filename)
+        s3 = boto.connect_s3()
+        bucket = s3.get_bucket(app.config['AWS_S3_BUCKET_NAME'])
+
+        if bucket.get_key(filename_full) != None:
+            # TODO: if we randomize the image URLs, then we can't do this simple
+            #   check anymore. Perhaps we should consider hashing?
+            success = False
+            justification = 'That image has already been registered'
+
+        else:
+            key = bucket.new_key(filename_full)
+            key.set_contents_from_file(imageFile)
+            key.set_acl("public-read")
+            
+            # create thumbnail
+            output = StringIO.StringIO()
+            try:
+                im = PIL.open(imageFile)
+                im.thumbnail((200,200), PIL.ANTIALIAS)
+                im.convert('RGB').save(output, "JPEG")
+            except Exception as e: 
+                success = False
+                justification = str(e)
+
+            filename_thumb = filename_full + "_thumb200.jpg"
+            key_thumb = bucket.new_key(filename_thumb)
+            key_thumb.set_contents_from_string(output.getvalue(), headers={"Content-Type": "image/jpeg"})
+            key_thumb.set_acl("public-read")
+            
+            url_full = key.generate_url(expires_in=0, query_auth=False)
+            url_thumb = key_thumb.generate_url(expires_in=0, query_auth=False)
+
+            now = datetime.datetime.now()
+
+            # check if user already exists
+            # TODO: once we implement a user login system, this needs to be
+            #   largely redone
+            creator = User.query.filter_by(stripe_id=stripe_id).first()
+            if not creator:
+                creator = User()
+                creator.stripe_id = stripe_id
+                creator.date_created = now
+                creator.active = True
+                db.session.add(creator)
+                db.session.commit()
+
+            newImage = Image()
+            newImage.creator_id = creator.id
+            newImage.url_full = url_full
+            newImage.url_thumb = url_thumb
+            newImage.date_uploaded = now
+            newImage.description = description
+            # newImage.tags = "" # TODO
+            newImage.num_clicks = 0
+            newImage.num_purchases = 0
+
+            newLicense = License()
+            newLicense.image = newImage
+            newLicense.creator = creator
+            newLicense.active = True
+            newLicense.date_created = now
+            newLicense.allow_commercial = allow_commercial
+            newLicense.allow_derivative = allow_derivative
+            newLicense.price_base = price_base
+            newLicense.price_commercial = price_commercial
+            newLicense.price_derivative = price_derivative
+
+            db.session.add(newImage)
+            db.session.add(newLicense)
             db.session.commit()
 
-        newImage = Image()
-        newImage.creator_id = creator.id
-        newImage.url_full = url_full
-        newImage.url_thumb = url_full # TODO: create separate thumbnail
-        newImage.date_uploaded = now
-        newImage.description = description
-        # newImage.tags = "" # TODO
-        newImage.num_clicks = 0
-        newImage.num_purchases = 0
-
-        newLicense = License()
-        newLicense.image = newImage
-        newLicense.creator = creator
-        newLicense.active = True
-        newLicense.date_created = now
-        newLicense.allow_commercial = allow_commercial
-        newLicense.allow_derivative = allow_derivative
-        newLicense.price_base = price_base
-        newLicense.price_commercial = price_commercial
-        newLicense.price_derivative = price_derivative
-
-        db.session.add(newImage)
-        db.session.add(newLicense)
-        db.session.commit()
+    else:
+        success = False
+        justification = 'Invalid Image File'
 
     return render_template('creation-outcome.html', success=success, justification=justification)
 
@@ -260,4 +290,4 @@ def page_not_found(error):
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+       filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']

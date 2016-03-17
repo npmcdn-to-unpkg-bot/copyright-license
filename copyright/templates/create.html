@@ -25,15 +25,25 @@
 
   {% else %}
   <p>You've authenticated via Stripe Connect as {{stripe_id}}. You can create a license below:</p>
-  <form id="licenseInfo" class="well" enctype="multipart/form-data" action="/register" method="POST">
+
+  <form id="licenseInfo" class="well dropzone" enctype="multipart/form-data" action="/register" method="POST">
 
     <!-- Upload Image -->
     <div class="form-group">
-      <label for="imageInput">Image File</label>
-      <input id="imageInput" type="file">
+      <label>Image File</label><br>
+
+      <!-- Drop Zone with Preview -->
+      <div id="dropzoneWrapper">
+        <div id="dropzone">
+          <img id="previewImg" class="hidden" src="" alt="">
+          <div id="dropzoneDetails" class="hidden">
+            <span id="dropzoneName"></span>
+            <span id="dropzoneSize"></span>
+          </div>
+        </div>
+        <input id="fileInput" name="imageFile" type="file" accept="image/jpeg, image/png, image/gif" required>
+      </div>
     </div>
-    <img id="preview" class="img-responsive" src="../static/images/default.png">
-    <input type="hidden" id="image_url" name="image_url" value="../static/images/default.png" />
 
     <!-- Stripe -->
     <input type="hidden" value="{{stripe_id}}" name="stripe_id"/>
