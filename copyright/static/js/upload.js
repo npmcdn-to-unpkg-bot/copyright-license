@@ -1,9 +1,10 @@
 var fileInput = document.getElementById('fileInput');
 var dropzoneWrapper = document.getElementById('dropzoneWrapper');
-var previewImg = document.getElementById('previewImg');
+var dropzonePreviewImg = document.getElementById('dropzonePreviewImg');
 var dropzoneDetails = document.getElementById('dropzoneDetails');
 var dropzoneName = document.getElementById('dropzoneName');
 var dropzoneSize = document.getElementById('dropzoneSize');
+var dropzoneOverlayMessage = document.getElementById('dropzoneOverlayMessage');
 
 if (typeof window.FileReader != 'undefined') { // File API available
   dropzoneWrapper.classList.add('active');
@@ -31,8 +32,8 @@ fileInput.onchange = function(e) {
 
   var reader = new FileReader();
   reader.onload = function(event) {
-    previewImg.src = reader.result;
-    previewImg.classList.remove('hidden');
+    dropzonePreviewImg.src = reader.result;
+    dropzonePreviewImg.classList.remove('hidden');
     dropzoneDetails.classList.remove('hidden');
   }
 
