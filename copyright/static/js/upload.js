@@ -9,16 +9,20 @@ if (typeof window.FileReader != 'undefined') { // File API available
   dropzoneWrapper.classList.add('active');
 }
 
-dropzoneWrapper.ondragenter = function(e) {
-  this.classList.add("drag-hover");
-};
-dropzoneWrapper.ondragover = dropzoneWrapper.ondragenter;
-dropzoneWrapper.ondrop = dropzoneWrapper.ondragenter;
+if (!detectIE()) {
+  dropzoneWrapper.ondragenter = function(e) {
+    this.classList.add("drag-hover");
+  };
+  dropzoneWrapper.ondragover = dropzoneWrapper.ondragenter;
+  dropzoneWrapper.ondrop = dropzoneWrapper.ondragenter;
 
-dropzoneWrapper.ondragend = function(e) {
-  this.classList.remove("drag-hover");
-};
-dropzoneWrapper.ondragleave = dropzoneWrapper.ondragend;
+  dropzoneWrapper.ondragend = function(e) {
+    this.classList.remove("drag-hover");
+  };
+  dropzoneWrapper.ondragleave = dropzoneWrapper.ondragend;
+} else {
+  dropzoneOverlayMessage.innerHTML = "Click to select an image";
+}
 
 fileInput.onchange = function(e) {
   // check to make sure we can use File Reader API
@@ -51,3 +55,17 @@ function getFileSizeString(size) {
 
   return size.toFixed(1) + ' ' + byteUnits[i];
 };
+
+function detectIE() {
+  var ua = window.navigator.userAgent;
+
+  var msie = ua.indexOf('MSIE ');
+  var trident = ua.indexOf('Trident/');
+  var edge = ua.indexOf('Edge/');
+  if (msie > 0 || trident > 0 || edge > 0) {
+     return true;
+  }
+
+  // other browser
+  return false;
+}

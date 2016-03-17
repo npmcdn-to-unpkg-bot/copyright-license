@@ -31,27 +31,46 @@
 
 #dropzoneWrapper.active.drag-hover #dropzone,
 #dropzoneWrapper.active:hover #dropzone {
-  border: 5px dashed #333;
+  border: 5px dashed black;
 }
 
-#dropzoneWrapper.active #previewImg {
+#dropzoneWrapper.active #dropzonePreviewImg {
   max-width: 500px;
   max-height: 500px;
   box-sizing: border-box;
 }
 
-#dropzoneWrapper.active #dropzoneDetails {
-  text-align: center;
-}
-
 #dropzoneWrapper.active #dropzoneDetails span {
   background-color: gray;
   color: white;
-  text-align: center;
   display: inline-block;
   margin: 0.5em;
   padding: 0.5em;
   border-radius: 3px;
+}
+
+#dropzoneWrapper.active #dropzoneOverlayMessage {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: gray;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 75px 0;
+}
+
+#dropzoneWrapper.active:hover #dropzoneOverlayMessage,
+#dropzoneWrapper.active.drag-hover #dropzoneOverlayMessage {
+  color: black;
+}
+
+#dropzoneWrapper.active.fileSelected #dropzoneOverlayMessage {
+  display: none !important;
 }
 
 .hidden {
