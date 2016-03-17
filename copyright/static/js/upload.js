@@ -26,6 +26,8 @@ if (!detectIE()) {
 }
 
 fileInput.onchange = function(e) {
+  dropzoneWrapper.classList.add('fileSelected');
+  
   // check to make sure we can use File Reader API
   if (typeof window.FileReader === 'undefined')
     return false;
