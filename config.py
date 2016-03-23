@@ -6,6 +6,7 @@ DEBUG = os.environ.get('DEBUG', False)
 
 # Database
 SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # File Upload
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
