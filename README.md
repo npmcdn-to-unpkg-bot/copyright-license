@@ -21,18 +21,22 @@ Follow the instructions in the [Wiki](https://github.com/chrisyeh96/copyright-li
 
 
 ### Making Changes to the App
-1. Checkout your own branch if you have one, or create a new branch if you don't.
-  * Creating a new branch: `git branch chris-dev`
-  * Switching branches: `git checkout chris-dev`
+1. Pull the latest changes into your local master branch
+  * `git checkout master` and `git pull`
+2. Checkout your own branch if you have one, or create a new branch if you don't.
+  * Creating a new branch: e.g. `git branch chris-dev`
+  * Switching branches: e.g. `git checkout chris-dev`
   * Merge in the latest changes from the `master` branch: `git merge master`
-2. Make changes to the app.
-3. Check that it works locally. See section "Running the app locally" above, and make sure everything works.
-4. Commit the changes with an appropriate description: `git commit -m [COMMIT DESCRIPTION]`
-5. Push to your branch on GitHub: `git push origin`
-6. Submit a pull request on GitHub to merge your changes into the `master` branch.
-7. Once someone has reviewed your changes and merged them into master, pull the latest changes to master: `git checkout master` and `git pull`
-8. Push to Heroku: `git push heroku master`
-9. Check to make sure that it works on our live Heroku app: [copyright-license.herokuapp.com](http://copyright-license.herokuapp.com/). If there are any errors, check the logs: `heroku logs --tail`
+3. Make changes to the app.
+4. Check that it works locally. See section "Running the app locally" above.
+5. Commit the changes with an appropriate description
+  * Select files from your working directory with `git add [FILENAME]`
+  * Commit the files: `git commit -m [COMMIT DESCRIPTION]`
+6. Push to your branch on GitHub: `git push origin`
+7. Submit a pull request on GitHub to merge your changes into the `master` branch.
+8. Once someone has reviewed your changes and merged them into master, pull the latest changes to master: `git checkout master` and `git pull`
+9. Push to Heroku: `git push heroku master`
+10. Check to make sure that it works on our live Heroku app: [copyright-license.herokuapp.com](http://copyright-license.herokuapp.com/). If there are any errors, check the logs: `heroku logs --tail`
 
 
 ### Managing the Database
