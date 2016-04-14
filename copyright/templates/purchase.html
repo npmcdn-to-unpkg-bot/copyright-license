@@ -11,6 +11,7 @@
   <form id="purchaseForm" action="/charge" method="POST" class="well">
     <!-- Hidden Fields -->
     <input type="hidden" value="{{license.id}}" name="licenseId">
+    <input type="hidden" value="{{image.id}}" name="imageId">
     <input id="tokenId" type="hidden" value="" name="tokenId">
     <input id="stripeEmail" type="hidden" value="" name="stripeEmail">
 
