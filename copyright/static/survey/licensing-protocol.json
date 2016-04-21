@@ -2,7 +2,7 @@
 	"name": "Licensing Protocal for Photographers",
 	"sections": {
 		"start": {
-			"title": "null",
+			"title": null,
 			"questions": [
 				{
 					"title": "Description of the Work",
@@ -22,7 +22,7 @@
 				{
 					"title": "Descriptive keywords",
 					"subtitle": "Separated with commas (more information will increase usability)",
-					"type": "words"
+					"type": "text"
 				}
 			],
 			"next": "credit"
@@ -45,7 +45,7 @@
 						"option": 1
 					},
 					"title": "To whom should credit be given?",
-					"type": "words"
+					"type": "text"
 				},
 				{
 					"title": "Could the lecensee edit the Work?",
@@ -59,6 +59,59 @@
 			],
 			"next": "pricing"
 		},
-		"pricing": {}
+		"pricing": {
+			"title": "Licensing Options",
+			"description": [
+				"Definitions for the pricing options below",
+				"BREAK",
+				"Type of User:",
+				"1 person (e.g., self employed, blogger, student);",
+				"2-50 people (e.g., SME's);",
+				"51+ people (e.g., large corporations, NGO's, universities, governmental agencies);",
+				"BREAK",
+				"Type of Use:",
+				"Internal Use (e.g., presentation, brochure or newsletter for employees, closed internal network, social media or website that is available only to employees);",
+				"External Use (e.g., advertisement, campaign,  product or service sold to third parties, website, Facebook page or blog)"
+			],
+			"questions": [
+				{
+					"title": "Licensing Fee",
+					"subtitle": "No royalties (for all lecenses)",
+					"type": "button",
+					"text": "No royalties (for all lecenses)",
+				},
+				{
+					"titile": null,
+					"type": "number",
+					"format": "table",
+					"rows": [
+						"1 person",
+						"2-50 people",
+						"51+ people"
+					],
+					"cols": [
+						"Internal use",
+						"External use"
+					],
+					"table-header-format": "{row} by {col}"
+				}
+			],
+			"next": "ownership"
+		},
+		"ownership": {
+			"title": null,
+			"questions": [
+				{
+					"title": "Declaration Of Ownership, Releases & Waivers",
+					"subtitle": "I am the sole owner of the work, and any and all third party interests have been cleared  (e.g., model release, co-owner, publicity rights, etc.)",
+					"type": "radio",
+					"options": [
+						"Yes",
+						"No"
+					]
+				}
+			],
+			"next": "END"
+		}
 	}
 }
