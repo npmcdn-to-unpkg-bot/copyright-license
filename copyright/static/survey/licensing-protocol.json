@@ -1,0 +1,64 @@
+{
+	"name": "Licensing Protocal for Photographers",
+	"sections": {
+		"start": {
+			"title": "null",
+			"questions": [
+				{
+					"title": "Description of the Work",
+					"subtitle": "Check the relevant box or boxes",
+					"type": "check",
+					"options": [
+						"Animals, Plants & Nature",
+						"Architecture",
+						"People & Portraits",
+						"Sports",
+						"Still Life",
+						"Street and Urban",
+						"Transportation",
+						"Other"
+					]
+				},
+				{
+					"title": "Descriptive keywords",
+					"subtitle": "Separated with commas (more information will increase usability)",
+					"type": "words"
+				}
+			],
+			"next": "credit"
+		},
+		"credit": {
+			"title": "Credit, Attributio & Integrity of the Work",
+			"questions": [
+				{
+					"title": "In what form should credit by given?",
+					"type": "check",
+					"options": [
+						"Image Already Includes Credit (e.g., watermark, embedded credit)",
+						"Text Near the Image (e.g., text at the website)",
+						"No Credit (do not want credit)"
+					]
+				},
+				{
+					"condition": {
+						"question": 0,
+						"option": 1
+					},
+					"title": "To whom should credit be given?",
+					"type": "words"
+				},
+				{
+					"title": "Could the lecensee edit the Work?",
+					"type": "radio",
+					"options": [
+						"Yes (edit as desired)",
+						"Minor edits (e.g., crop, color shift, resize)",
+						"No (\"as is\" use only)"
+					]
+				}
+			],
+			"next": "pricing"
+		},
+		"pricing": {}
+	}
+}
