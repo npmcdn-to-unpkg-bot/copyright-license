@@ -116,3 +116,21 @@ class Receipt(db.Model):
 
     # future fields
     # expiration_date = db.Column(db.DateTime())
+
+class Feedback(db.Model):
+    """
+    User feedback from "About" page
+    """
+    __tablename__ = 'feedback' # this matches the default
+    
+    # required fields
+    id = db.Column(db.Integer, primary_key=True)
+    input = db.Column(db.String())
+
+    # relationships
+    
+    # optional fields
+    # none
+
+    # future fields
+    # expiration_date = db.Column(db.DateTime())

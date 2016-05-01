@@ -3,7 +3,7 @@ from copyright.models import *
 from werkzeug import secure_filename
 
 import requests, datetime, stripe, sys
-from flask import render_template, request, jsonify, Response
+from flask import render_template, request, jsonify, Response, redirect, url_for
 from math import ceil
 
 # required for file upload
@@ -44,6 +44,14 @@ def search():
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+@app.route('/submit_feedback', methods=['POST'])
+def submit_feedback():
+    newFeedback = Feedback()
+    newFeedback.input = request.form['feedback']
+    db.session.add(newFeedback)
+    db.session.commit()
+    return redirect(url_for('about'))
 
 @app.route('/charge', methods=['POST'])
 def charge():
