@@ -3,7 +3,8 @@ from copyright.models import *
 from werkzeug import secure_filename
 
 import requests, datetime, stripe, sys
-from flask import render_template, request, jsonify, Response, redirect, url_for
+from flask import session, render_template, request, jsonify, Response, redirect, url_for
+from sqlalchemy import desc
 from math import ceil
 
 # required for file upload
@@ -35,9 +36,11 @@ def search():
     images = []
     if request.method == 'POST' and request.form['searchText'] != '':
         searchText = '%' + request.form['searchText'] + '%'
-        images = Image.query.filter(Image.description.like(searchText)).all()
+        images = Image.query.filter(Image.description.like(searchText)) \
+                            .order_by(desc(2*Image.num_purchases + Image.num_clicks)) \
+                            .all()
     else: # GET
-        images = Image.query.filter_by().all()
+        images = Image.query.order_by(desc(2*Image.num_purchases + Image.num_clicks)).all()
     pages = list(range(1, int(ceil(len(images) / float(images_per_page)) + 1)))
     return render_template('search.html', images=images[0:images_per_page], pages=pages)
 
@@ -55,11 +58,32 @@ def submit_feedback():
 
 @app.route('/charge', methods=['POST'])
 def charge():
-    print("BEGINNING CHARGE")
+    print "BEGINNING CHARGE"
     sys.stdout.flush()
 
-    license_id = request.form['licenseId']
+    # error checking
+    if ('current_image_id' not in session) or ('current_license_id' not in session):
+        # TODO: actually handle the error
+        print "Error: image ID or license ID not found in session"
+        sys.stdout.flush()
+
+    license_id = int(request.form['licenseId'])
+    image_id = int(request.form['imageId'])
+
+    if (license_id != session['current_license_id']) or (image_id != session['current_image_id']):
+        # TODO: actually handle the error
+        print "Error: mismatch between session and form submission for image ID or license ID"
+        sys.stdout.flush()
+
     license = License.query.get(license_id)
+    image = Image.query.get(image_id)
+
+    if (license.image_id != image_id) or (image.license.id != license_id):
+        # TODO: actually handle the error
+        print "Error: mismatch between image and license"
+        sys.stdout.flush()
+
+    image.num_purchases += 1
 
     is_commercial = False
     if license.allow_commercial:
@@ -78,6 +102,7 @@ def charge():
 
     newReceipt = Receipt()
     newReceipt.license_id = license_id
+    newReceipt.image_id = image_id
     newReceipt.transaction_date = datetime.datetime.now()
     newReceipt.is_commercial = is_commercial
     newReceipt.is_derivative = is_derivative
@@ -127,6 +152,10 @@ def purchase(image_id):
     license = License.query.filter_by(image_id=image_id).first()
     if not license:
         return render_template('404.html')
+    image.num_clicks += 1
+    db.session.commit()
+    session['current_image_id'] = image.id
+    session['current_license_id'] = image.license.id
     return render_template('purchase.html', image=image, license=license, api_key=app.config['STRIPE_PUBLISHABLE_KEY'])
 
 

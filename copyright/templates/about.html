@@ -24,5 +24,16 @@
         </form>
       </div>
     </div>
+
+    <form action="/submit_feedback">
+      <input type="text" name="feedback_text">
+      <input type="submit">
+    </form>
+
+    {% for feedback in all_feedback %}
+      <div>
+        {{ feedback.feedback_text }}
+      </div>
+    {% endfor %}
   </div>
 {% endblock %}
