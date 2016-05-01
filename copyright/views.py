@@ -16,7 +16,7 @@ from PIL import Image as PIL
 import StringIO
 
 # to print debug statements to Heroku console:
-# import sys
+import sys, os
 # print "statement"
 # sys.stdout.flush()
 # source: http://stackoverflow.com/questions/12504588/
@@ -282,6 +282,7 @@ def register_license():
 
 @app.route('/oauth/callback')
 def callback():
+    sys.stdout.flush()
     code = request.args.get('code')
     data = {'grant_type': 'authorization_code',
             'client_id': app.config['STRIPE_CLIENT_ID'],
@@ -312,6 +313,10 @@ def page():
             'url': images[i].url_thumb,
         })
     return(jsonify(result=result))
+
+@app.route('/licensing-protocol')
+def protocol():
+    return jsonify(json.load(open('./copyright/static/survey/licensing-protocol.json', 'rb')))
 
 @app.errorhandler(404)
 def page_not_found(error):

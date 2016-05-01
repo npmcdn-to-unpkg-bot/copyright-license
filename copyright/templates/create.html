@@ -19,7 +19,7 @@
   </ol>
 
   {% if not token %}
-  <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write">
+  <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write&amp;redirect_uri=http://localhost:5000/oauth/callback">
     <img src="/static/images/stripe.png">
   </a>
 
@@ -53,6 +53,8 @@
 
     <!-- Stripe -->
     <input type="hidden" value="{{stripe_id}}" name="stripe_id"/>
+
+    <div id="licensing-protocol">
 
     <!-- Commercial -->
     <div class="form-group">
@@ -129,4 +131,5 @@
 {% if token %}
   <script type="text/javascript" src="../static/js/upload.js"></script>
 {% endif %}
+<script type="text/javascript" src="../static/js/licensing-protocol.js"></script>
 {% endblock %}

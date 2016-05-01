@@ -1,7 +1,7 @@
 {
 	"name": "Licensing Protocal for Photographers",
-	"sections": {
-		"start": {
+	"sections": [
+		{
 			"title": null,
 			"questions": [
 				{
@@ -22,13 +22,13 @@
 				{
 					"title": "Descriptive keywords",
 					"subtitle": "Separated with commas (more information will increase usability)",
+					"placeholder": "keyword, another keyword",
 					"type": "text"
 				}
-			],
-			"next": "credit"
+			]
 		},
-		"credit": {
-			"title": "Credit, Attributio & Integrity of the Work",
+		{
+			"title": "Credit, Attribution & Integrity of the Work",
 			"questions": [
 				{
 					"title": "In what form should credit by given?",
@@ -45,21 +45,22 @@
 						"option": 1
 					},
 					"title": "To whom should credit be given?",
+					"placeholder": "Credited photographer",
 					"type": "text"
 				},
 				{
 					"title": "Could the lecensee edit the Work?",
 					"type": "radio",
+					"id": "edit-radio",
 					"options": [
 						"Yes (edit as desired)",
 						"Minor edits (e.g., crop, color shift, resize)",
 						"No (\"as is\" use only)"
 					]
 				}
-			],
-			"next": "pricing"
+			]
 		},
-		"pricing": {
+		{
 			"title": "Licensing Options",
 			"description": [
 				"Definitions for the pricing options below",
@@ -78,12 +79,12 @@
 					"title": "Licensing Fee",
 					"subtitle": "Please fill in the desired royalty rate in USD for each license",
 					"type": "button",
-					"text": "No royalties (for all lecenses)",
+					"text": "No royalties (for all lecenses)"
 				},
 				{
 					"title": null,
-					"type": "number",
-					"format": "table",
+					"type": "table",
+					"format": "number",
 					"rows": [
 						"1 person",
 						"2-50 people",
@@ -95,23 +96,22 @@
 					],
 					"table-header-format": "{row} by {col}"
 				}
-			],
-			"next": "ownership"
+			]
 		},
-		"ownership": {
+		{
 			"title": null,
 			"questions": [
 				{
 					"title": "Declaration Of Ownership, Releases & Waivers",
 					"subtitle": "I am the sole owner of the work, and any and all third party interests have been cleared  (e.g., model release, co-owner, publicity rights, etc.)",
 					"type": "radio",
+					"id": "waiver-radio",
 					"options": [
 						"Yes",
 						"No"
 					]
 				}
-			],
-			"next": "END"
+			]
 		}
-	}
+	]
 }
