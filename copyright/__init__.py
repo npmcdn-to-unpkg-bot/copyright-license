@@ -8,3 +8,12 @@ app.jinja_env.add_extension('pyjade.ext.jinja.PyJadeExtension')
 db = SQLAlchemy(app)
 
 from copyright import views, models
+
+from copyright.home.controllers import homeRoutes
+app.register_blueprint(homeRoutes)
+
+from copyright.create.controllers import createRoutes
+app.register_blueprint(createRoutes)
+
+from copyright.purchase.controllers import purchaseRoutes
+app.register_blueprint(purchaseRoutes)

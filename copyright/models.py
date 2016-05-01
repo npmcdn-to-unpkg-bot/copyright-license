@@ -18,6 +18,7 @@ class Image(db.Model):
     num_purchases = db.Column(db.Integer)
 
     # optional fields
+    category = db.Column(db.String())
     description = db.Column(db.String())
     location_take = db.Column(db.String())
     date_taken = db.Column(db.DateTime())
@@ -71,9 +72,18 @@ class License(db.Model):
     image_id = db.Column(db.Integer, db.ForeignKey('images.id'))
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     active = db.Column(db.Boolean)
-    date_created = db.Column(db.DateTime())
+    date_created = db.Column(db.DateTime()) # date that license was created
+    credit_type = db.Column(db.Integer)
+        # 0: Do not want credit
+        # 1: Image Already Includes Credit (e.g., watermark, embedded credit)
+        # 2: Text Near the Image (e.g., text at the website)
+    credit_entity = db.Column(db.String())
+        # only filled out if "Text Near the Image" is selected
     allow_commercial = db.Column(db.Boolean)
-    allow_derivative = db.Column(db.Boolean)
+    allow_derivative = db.Column(db.Integer)
+        # 0: No edits allowed
+        # 1: Edits allowed
+        # 2: Minor edits only (e.g., crop, color shift, resize)
     price_base = db.Column(db.Integer)
     price_commercial = db.Column(db.Integer)
     price_derivative = db.Column(db.Integer)
@@ -87,7 +97,6 @@ class License(db.Model):
     # none
 
     # future fields
-    # duration_days = db.Column(db.Integer)
 
 class Receipt(db.Model):
     """
@@ -115,7 +124,6 @@ class Receipt(db.Model):
     # none
 
     # future fields
-    # expiration_date = db.Column(db.DateTime())
 
 class Feedback(db.Model):
     """
@@ -133,4 +141,3 @@ class Feedback(db.Model):
     # none
 
     # future fields
-    # expiration_date = db.Column(db.DateTime())
