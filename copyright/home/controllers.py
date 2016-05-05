@@ -24,6 +24,7 @@ def record_params(setup_state):
   global app
   app = setup_state.app
 
+
 @homeRoutes.route('/')
 def index():
     return render_template('index.html')
@@ -39,7 +40,8 @@ def search():
     images = []
     if request.method == 'POST' and request.form['searchText'] != '':
         searchText = '%' + request.form['searchText'] + '%'
-        images = Image.query.filter(Image.description.like(searchText)) \
+        # use ilike() to get case-insensitive search
+        images = Image.query.filter(Image.description.ilike(searchText)) \
                             .order_by(desc(2*Image.num_purchases + Image.num_clicks)) \
                             .all()
     else: # GET
