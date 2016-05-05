@@ -65,9 +65,10 @@ def page():
     return jsonify(result=result)
 
 
-@homeRoutes.route('/about')
+@homeRoutes.route('/about', methods=['GET'])
 def about():
-    return render_template('about.html')
+    feedback = Feedback.query.all()
+    return render_template('about.html', feedback=feedback)
 
 
 @homeRoutes.route('/submit_feedback', methods=['POST'])
