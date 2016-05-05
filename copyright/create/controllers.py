@@ -67,6 +67,9 @@ def register_license():
                 success = False
                 justification = str(e)
 
+            # reset cursor of image file after reading it to create the thumbnail
+            imageFile.seek(0)
+
             # connect to Amazon S3
             s3 = boto.connect_s3()
             bucket = s3.get_bucket(app.config['AWS_S3_BUCKET_NAME'])
