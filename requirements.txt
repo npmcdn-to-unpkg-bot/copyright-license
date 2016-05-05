@@ -1,4 +1,4 @@
-alembic==0.8.5
+alembic==0.8.6
 boto==2.39.0
 Flask==0.10.1
 Flask-Migrate==1.8.0
@@ -9,12 +9,11 @@ itsdangerous==0.24
 Jinja2==2.8
 Mako==1.0.4
 MarkupSafe==0.23
-Pillow==3.1.1
+Pillow==3.2.0
 psycopg2==2.6.1
-pyjade==3.1.0
-python-editor==0.5
-requests==2.9.1
+python-editor==1.0
+requests==2.10.0
 six==1.10.0
 SQLAlchemy==1.0.12
-stripe==1.31.0
-Werkzeug==0.11.4
+stripe==1.33.0
+Werkzeug==0.11.9
