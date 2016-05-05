@@ -6,10 +6,9 @@ from copyright.models import *
 import requests, datetime, stripe, sys
 
 # required for S3 storage and image processing
+import os, hashlib, boto, StringIO
 from werkzeug import secure_filename
-import boto
 from PIL import Image as PIL
-import StringIO
 
 # to print debug statements to Heroku console:
 # import sys
@@ -38,30 +37,25 @@ def register_license():
 
     if imageFile and allowed_file(imageFile.filename):
 
-        # get form params
-        stripe_id = request.form['stripe_id']
-        allow_commercial = request.form['allow_commercial']
-        allow_derivative = int(request.form['allow_derivative'])
-        price_base = request.form['price_base']
-        price_commercial = request.form['price_commercial']
-        price_derivative = request.form['price_derivative']
-        description = request.form['description']
+        # calculate SHA1 hash of image file
+        sha1_hash = hashlib.sha1(imageFile.read()).hexdigest()
 
-        # process image
-        filename_full = secure_filename(imageFile.filename)
-        s3 = boto.connect_s3()
-        bucket = s3.get_bucket(app.config['AWS_S3_BUCKET_NAME'])
-
-        if bucket.get_key(filename_full) != None:
-            # TODO: if we randomize the image URLs, then we can't do this simple
-            #   check anymore. Perhaps we should consider hashing?
+        if Image.query.filter_by(sha1_hash=sha1_hash).first() != None:
             success = False
             justification = 'That image has already been registered'
 
         else:
-            key = bucket.new_key(filename_full)
-            key.set_contents_from_file(imageFile)
-            key.set_acl("public-read")
+            # get form params
+            stripe_id = request.form['stripe_id']
+            allow_commercial = request.form['allow_commercial']
+            allow_derivative = int(request.form['allow_derivative'])
+            price_base = request.form['price_base']
+            price_commercial = request.form['price_commercial']
+            price_derivative = request.form['price_derivative']
+            description = request.form['description']
+
+            # process image
+            filename_full = secure_filename(sha1_hash+getFileExt(imageFile.filename))
             
             # create thumbnail
             output = StringIO.StringIO()
@@ -73,6 +67,16 @@ def register_license():
                 success = False
                 justification = str(e)
 
+            # connect to Amazon S3
+            s3 = boto.connect_s3()
+            bucket = s3.get_bucket(app.config['AWS_S3_BUCKET_NAME'])
+
+            # upload full image
+            key = bucket.new_key(filename_full)
+            key.set_contents_from_file(imageFile)
+            key.set_acl("public-read")
+
+            # upload thumbnail image
             filename_thumb = filename_full + "_thumb200.jpg"
             key_thumb = bucket.new_key(filename_thumb)
             key_thumb.set_contents_from_string(output.getvalue(), headers={"Content-Type": "image/jpeg"})
@@ -96,6 +100,7 @@ def register_license():
                 db.session.commit()
 
             newImage = Image()
+            newImage.sha1_hash = sha1_hash
             newImage.creator_id = creator.id
             newImage.url_full = url_full
             newImage.url_thumb = url_thumb
@@ -146,6 +151,17 @@ def callback():
     access_key = resp.get('stripe_publishable_key', None)
     return render_template('create.html', token=token, stripe_id=stripe_id, stripe_key=access_key)
 
+## Helper Functions
+
 def allowed_file(filename):
     return '.' in filename and \
        filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+# generate random string of length N
+def randomString(N):
+    choices = string.ascii_uppercase + string.ascii_lowercase + string.digits
+    return ''.join(random.SystemRandom().choice(choices) for _ in range(N))
+
+# get file extension (including the dot): "picture.jpg" -> ".jpg"
+def getFileExt(filename):
+    return os.path.splitext(filename)[1]

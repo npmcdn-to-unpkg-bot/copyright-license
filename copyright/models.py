@@ -8,6 +8,7 @@ class Image(db.Model):
     
     # required fields
     id = db.Column(db.Integer, primary_key=True)
+    sha1_hash = db.Column(db.String, unique=True)
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     # license_id = db.Column(db.Integer, db.ForeignKey('licenses.id'))
     date_uploaded = db.Column(db.DateTime())
