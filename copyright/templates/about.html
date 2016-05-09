@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/static/css/about.css">
+{% endblock %}
+
 {% block content %}
   <div class="container fix starter-template">
     <div class="row row-centered">
@@ -13,18 +17,19 @@
         <p>Please contact <a href="mailto:chrisyeh@stanford.edu">Chris</a> for information about how to submit a mock “purchase” of a photograph, or with any questions.</p>
         <p>This prototype is for demonstration purposes only.</p>
         <p><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">License Exchange</span> by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Code the Change</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a></p>
+        <form action="/submit_feedback" method="POST">
+          Do you have feedback? Enter it here.<br>
+          <input id="textbox" type="text" name="feedback"><br><br>
+          <input type="submit">
+        </form>
       </div>
     </div>
 
-    <form action="/submit_feedback">
-      <input type="text" name="feedback_text">
-      <input type="submit">
-    </form>
-
-    {% for feedback in all_feedback %}
-      <div>
-        {{ feedback.feedback_text }}
-      </div>
+    <ul>
+    {% for item in feedback %}
+      <li><p>{{ item.input }}</p></li>
     {% endfor %}
+    </ul>
+
   </div>
 {% endblock %}

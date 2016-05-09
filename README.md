@@ -12,9 +12,9 @@ Follow the instructions in the [Wiki](https://github.com/chrisyeh96/copyright-li
 
 ### Running the app locally
 1. Activate the virtual environment
-  * Windows (using Git Bash): source env/Scripts/activate
-  * Windows (using Command Prompt): env\Scripts\activate
-  * Mac OSX / Linux: source env/bin/activate
+  * Windows (using Git Bash): `source env/Scripts/activate`
+  * Windows (using Command Prompt): `env\Scripts\activate`
+  * Mac OSX / Linux: `source env/bin/activate`
 2. Run `heroku local`
   * I sometimes have issues running `heroku local` on my on Windows laptop. In this case, try `python run.py`. You may have to use Option 2 above to set up the configuration variables. Just be sure to never commit the API keys to our repo.
 3. Open up your web browswer and go to `http://localhost:5000`
