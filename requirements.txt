@@ -15,5 +15,6 @@ python-editor==1.0
 requests==2.10.0
 six==1.10.0
 SQLAlchemy==1.0.12
+stormpath==2.2.0
 stripe==1.33.0
 Werkzeug==0.11.9
