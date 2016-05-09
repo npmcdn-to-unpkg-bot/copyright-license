@@ -6,9 +6,10 @@ from copyright.models import *
 import requests, datetime, stripe, sys
 
 # required for S3 storage and image processing
-import os, hashlib, boto, StringIO
+import os, hashlib, boto, StringIO, math
 from werkzeug import secure_filename
-from PIL import Image as PIL
+from PIL import Image as PilImage
+from PIL import ImageDraw, ImageFont, ImageEnhance
 
 # to print debug statements to Heroku console:
 # import sys
@@ -58,12 +59,15 @@ def register_license():
             filename_full = secure_filename(sha1_hash+getFileExt(imageFile.filename))
             
             # create thumbnail
-            output = StringIO.StringIO()
+            # output is of type StringIO
+            thumbnailImageAsString = None
             try:
-                im = PIL.open(imageFile)
-                im.thumbnail((200,200), PIL.ANTIALIAS)
-                im.convert('RGB').save(output, "JPEG")
-            except Exception as e: 
+                thumbnailImageAsString = createThumbnailWithWatermark(imageFile)
+                print "Created watermarked image thumbnail"
+                sys.stdout.flush()
+            except Exception as e:
+                print "Reached exception"
+                sys.stdout.flush()
                 success = False
                 justification = str(e)
 
@@ -82,7 +86,7 @@ def register_license():
             # upload thumbnail image
             filename_thumb = filename_full + "_thumb200.jpg"
             key_thumb = bucket.new_key(filename_thumb)
-            key_thumb.set_contents_from_string(output.getvalue(), headers={"Content-Type": "image/jpeg"})
+            key_thumb.set_contents_from_string(thumbnailImageAsString, headers={"Content-Type": "image/jpeg"})
             key_thumb.set_acl("public-read")
             
             url_full = key.generate_url(expires_in=0, query_auth=False)
@@ -168,3 +172,49 @@ def randomString(N):
 # get file extension (including the dot): "picture.jpg" -> ".jpg"
 def getFileExt(filename):
     return os.path.splitext(filename)[1]
+
+def createThumbnailWithWatermark(imageFile, text="COPYRIGHT", opacity=0.25):
+    output = StringIO.StringIO()
+    FONT = 'arial.ttf'
+
+    img = PilImage.open(imageFile).convert('RGB')
+    img.thumbnail((200,200), PilImage.ANTIALIAS)
+
+    watermark = PilImage.new('RGBA', img.size, (0,0,0,0))
+    size = 2
+
+    # Try to load desired FONT file, otherwise just use whatever the default is
+    n_font = None
+    n_width = None
+    n_height = None
+
+    try:
+        # determine the maximum font size that will fit the image
+        n_font = ImageFont.truetype(FONT, size)
+        n_width, n_height = n_font.getsize(text)
+
+        while n_width+n_height < watermark.size[0]:
+            size += 2
+            n_font = ImageFont.truetype(FONT, size)
+            n_width, n_height = n_font.getsize(text)
+
+    except Exception as e:
+        n_font = ImageFont.load_default()
+        n_width, n_height = n_font.getsize(text)
+
+    # draw the watermark onto the image
+    draw = ImageDraw.Draw(watermark, 'RGBA')
+    draw.text(((watermark.size[0] - n_width) / 2,
+              (watermark.size[1] - n_height) / 2),
+              text, font=n_font)
+
+    # angle the watermark from the bottom left to top right
+    angle = math.atan2(watermark.size[1], watermark.size[0]) * 180 / math.pi
+    watermark = watermark.rotate(angle,PilImage.BICUBIC)
+
+    alpha = watermark.split()[3]
+    alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
+    watermark.putalpha(alpha)
+
+    PilImage.composite(watermark, img, watermark).save(output, 'JPEG')
+    return output.getvalue()
