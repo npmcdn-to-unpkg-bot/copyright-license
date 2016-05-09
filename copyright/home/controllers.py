@@ -77,7 +77,7 @@ def submit_feedback():
     newFeedback.input = request.form['feedback']
     db.session.add(newFeedback)
     db.session.commit()
-    return redirect(url_for('about'))
+    return redirect(url_for('homeRoutes.about'))
 
 
 @homeRoutes.errorhandler(404)
