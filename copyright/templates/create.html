@@ -19,7 +19,7 @@
   </ol>
 
   {% if not token %}
-  <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write&amp;redirect_uri=http://localhost:5000/oauth/callback">
+  <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write">
     <img src="/static/images/stripe.png">
   </a>
 
@@ -65,6 +65,6 @@
 {% block scripts %}
 {% if token %}
   <script type="text/javascript" src="../static/js/upload.js"></script>
+  <script type="text/javascript" src="../static/js/licensing-protocol.js"></script>
 {% endif %}
-<script type="text/javascript" src="../static/js/licensing-protocol.js"></script>
 {% endblock %}
