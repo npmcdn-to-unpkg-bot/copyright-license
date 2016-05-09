@@ -51,76 +51,11 @@
       </div>
     </div>
 
+    <p id="loading-message">Loading...</p>
+
     <!-- Stripe -->
     <input type="hidden" value="{{stripe_id}}" name="stripe_id"/>
 
-    <div id="licensing-protocol">
-
-    <!-- Commercial -->
-    <div class="form-group">
-      <label>Commercial Use</label>
-      <div class="radio">
-        <label>
-          <input type="radio" name="allow_commercial" value="False" checked>
-          Do not allow commercial use of the work
-        </label>
-      </div>
-      <div class="radio">
-        <label>
-          <input type="radio" name="allow_commercial" value="True">
-          Allow commercial use of the work
-        </label>
-      </div>
-    </div>
-
-    <!-- Derivative -->
-    <div class="form-group">
-      <label>Derivative Works</label>
-      <div class="radio">
-        <label>
-          <input type="radio" name="allow_derivative" value="False" checked>
-          Do not allow derivative works
-        </label>
-      </div>
-      <div class="radio">
-        <label>
-          <input type="radio" name="allow_derivative" value="True">
-          Allow modifications and derivative works
-        </label>
-      </div>
-    </div>
-    
-    <!-- Price -->
-    <div class="form-group">
-      <label for="price_base">Base Price</label>
-      <div class="input-group">
-        <input id="price_base" class="form-control" type="text" placeholder="Amount" name="price_base" value="0">
-        <div class="input-group-addon">cents</div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="price_commercial">Additional Charge for Commercial Use</label>
-      <div class="input-group">
-        <input id="price_commercial" class="form-control" type="text" placeholder="Amount" name="price_commercial" value="0">
-        <div class="input-group-addon">cents</div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="price_derivative">Additional Charge for Derivative Works</label>
-      <div class="input-group">
-        <input id="price_derivative" class="form-control" type="text" placeholder="Amount" name="price_derivative" value="0">
-        <div class="input-group-addon">cents</div>
-      </div>
-    </div>
-
-    <!-- Description -->
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea name="description" class="form-control" rows="3"></textarea>
-    </div>
-
-    <!-- Submit -->
-    <button type="submit" class="btn btn-default">Create</button>
   </form>
   {% endif %}
 

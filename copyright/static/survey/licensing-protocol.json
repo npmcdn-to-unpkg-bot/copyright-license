@@ -76,12 +76,6 @@
 			],
 			"questions": [
 				{
-					"title": "Licensing Fee",
-					"subtitle": "Please fill in the desired royalty rate in USD for each license",
-					"type": "button",
-					"text": "No royalties (for all lecenses)"
-				},
-				{
 					"title": null,
 					"type": "table",
 					"format": "number",
