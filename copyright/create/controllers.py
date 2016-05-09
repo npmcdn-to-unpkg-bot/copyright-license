@@ -1,14 +1,14 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, jsonify
 
 from copyright import db
 from copyright.models import *
 
-import requests, datetime, stripe, sys
+import requests, datetime, stripe, sys, json
 
 # required for S3 storage and image processing
 import os, hashlib, boto, StringIO, math
 from werkzeug import secure_filename
-from PIL import Image as PilImage
+from PIL import Image as PilImage # don't want Image to conflict with our Image() model class
 from PIL import ImageDraw, ImageFont, ImageEnhance
 
 # to print debug statements to Heroku console:
@@ -59,7 +59,7 @@ def register_license():
             filename_full = secure_filename(sha1_hash+getFileExt(imageFile.filename))
             
             # create thumbnail
-            # output is of type StringIO
+            # thumbnailImageAsString is of type StringIO
             thumbnailImageAsString = None
             try:
                 thumbnailImageAsString = createThumbnailWithWatermark(imageFile)
@@ -177,31 +177,34 @@ def randomString(N):
 def getFileExt(filename):
     return os.path.splitext(filename)[1]
 
-def createThumbnailWithWatermark(imageFile, text="COPYRIGHT", opacity=0.25):
+# create a watermarked thumbnail of the given image, returns it as a binary string
+# for convenient upload to Amazon S3
+# - source: http://pythoncentral.io/watermark-images-python-2x/
+def createThumbnailWithWatermark(imageFile, text="COPYRIGHT", opacity=0.5):
     output = StringIO.StringIO()
     FONT = 'arial.ttf'
 
+    # scale image to fit in 200x200 square, while preserving its aspect ratio
     img = PilImage.open(imageFile).convert('RGB')
     img.thumbnail((200,200), PilImage.ANTIALIAS)
 
+    # create empty image on which we will create the watermark
     watermark = PilImage.new('RGBA', img.size, (0,0,0,0))
-    size = 2
 
-    # Try to load desired FONT file, otherwise just use whatever the default is
+    # determine the maximum font size that will fit the image
+    # try to use the Arial font, but otherwise use whatever is available
     n_font = None
-    n_width = None
-    n_height = None
-
+    n_width, n_height, size = 0
     try:
-        # determine the maximum font size that will fit the image
-        n_font = ImageFont.truetype(FONT, size)
-        n_width, n_height = n_font.getsize(text)
-
-        while n_width+n_height < watermark.size[0]:
-            size += 2
+        # iteratively increase the font size until it is larger than fits
+        while (n_width+n_height < watermark.size[0]) or (n_width+n_height < watermark.size[1]):
+            size += 1
             n_font = ImageFont.truetype(FONT, size)
             n_width, n_height = n_font.getsize(text)
 
+        # decrease the font size back to what fits
+        size -= 1
+        n_font = ImageFont.truetype(FONT, size)
     except Exception as e:
         n_font = ImageFont.load_default()
         n_width, n_height = n_font.getsize(text)
@@ -216,9 +219,11 @@ def createThumbnailWithWatermark(imageFile, text="COPYRIGHT", opacity=0.25):
     angle = math.atan2(watermark.size[1], watermark.size[0]) * 180 / math.pi
     watermark = watermark.rotate(angle,PilImage.BICUBIC)
 
+    # add the correct opacity to the watermark
     alpha = watermark.split()[3]
     alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
     watermark.putalpha(alpha)
 
+    # combine the watermark with the image, then save it to the output binary string
     PilImage.composite(watermark, img, watermark).save(output, 'JPEG')
     return output.getvalue()
