@@ -154,6 +154,10 @@ def callback():
     access_key = resp.get('stripe_publishable_key', None)
     return render_template('create.html', token=token, stripe_id=stripe_id, stripe_key=access_key)
 
+@createRoutes.route('/licensing-protocol')
+def protocol():
+    return jsonify(json.load(open('./copyright/static/survey/licensing-protocol.json', 'rb')))
+
 ## Helper Functions
 
 def allowed_file(filename):
