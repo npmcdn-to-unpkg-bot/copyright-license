@@ -6,8 +6,8 @@
 			"questions": [
 				{
 					"title": "Description of the Work",
-					"subtitle": "Check the relevant box or boxes",
 					"type": "check",
+					"name": "category",
 					"options": [
 						"Animals, Plants & Nature",
 						"Architecture",
@@ -20,10 +20,11 @@
 					]
 				},
 				{
-					"title": "Descriptive keywords",
+					"title": "Add keywords/tags describing your image",
 					"subtitle": "Separated with commas (more information will increase usability)",
 					"placeholder": "keyword, another keyword",
-					"type": "text"
+					"type": "text",
+					"name": "keywords"
 				}
 			]
 		},
@@ -31,8 +32,9 @@
 			"title": "Credit, Attribution & Integrity of the Work",
 			"questions": [
 				{
-					"title": "In what form should credit by given?",
+					"title": "How do you want to be credited?",
 					"type": "check",
+					"name": "credit_format",
 					"options": [
 						"Image Already Includes Credit (e.g., watermark, embedded credit)",
 						"Text Near the Image (e.g., text at the website)",
@@ -44,14 +46,16 @@
 						"question": 0,
 						"option": 1
 					},
-					"title": "To whom should credit be given?",
-					"placeholder": "Credited photographer",
-					"type": "text"
+					"title": "Who do you want credit to be given?",
+					"placeholder": "&copy; 2016 John Doe",
+					"type": "text",
+					"name": "credit_receiver"
 				},
 				{
-					"title": "Could the lecensee edit the Work?",
+					"title": "Can the licensee edit the image?",
+					"subtitle": "In any case, the desired form of attribution (if any) will be respected.",
 					"type": "radio",
-					"id": "edit-radio",
+					"name": "edit_privilege",
 					"options": [
 						"Yes (edit as desired)",
 						"Minor edits (e.g., crop, color shift, resize)",
@@ -61,48 +65,54 @@
 			]
 		},
 		{
-			"title": "Licensing Options",
-			"description": [
-				"Definitions for the pricing options below",
-				"BREAK",
-				"Type of User:",
-				"1 person (e.g., self employed, blogger, student);",
-				"2-50 people (e.g., SME's);",
-				"51+ people (e.g., large corporations, NGO's, universities, governmental agencies);",
-				"BREAK",
-				"Type of Use:",
-				"Internal Use (e.g., presentation, brochure or newsletter for employees, closed internal network, social media or website that is available only to employees);",
-				"External Use (e.g., advertisement, campaign,  product or service sold to third parties, website, Facebook page or blog)"
-			],
+			"title": "Licensing Fees",
 			"questions": [
 				{
-					"title": null,
+					"title": "Do you want to set licensing fees?",
+					"subtitle": "All licenses fees are in USD",
+					"type": "radio",
+					"name": "set-fees-boolean",
+					"id": "set-fees-boolean",
+					"options": [
+						"No, I don't want to charge for any license",
+						"Yes, I'll set the licensing fees below"
+					]
+				},
+				{
+					"title": "Pricing Matrix",
+					"subtitle": "License Exchange is free for everyone. There's only a 2.9% + 30¢ fee per transaction that goes directly to the online payment processor (Stripe).",
 					"type": "table",
 					"format": "number",
+					"id": "price-matrix",
+					"name": "price",
 					"rows": [
-						"1 person",
-						"2-50 people",
-						"51+ people"
+						{
+							"text": "1 person",
+							"tooltip": true,
+							"tooltip-text": "(e.g., self employed, blogger, student)"
+						},
+						{
+							"text": "2-50 people",
+							"tooltip": true,
+							"tooltip-text": "(e.g., SME's)"
+						},
+						{
+							"text": "51+ people",
+							"tooltip": true,
+							"tooltip-text": "(e.g., large corporations, NGO's, universities, governmental agencies)"
+						}
 					],
 					"cols": [
-						"Internal use",
-						"External use"
-					],
-					"table-header-format": "{row} by {col}"
-				}
-			]
-		},
-		{
-			"title": null,
-			"questions": [
-				{
-					"title": "Declaration Of Ownership, Releases & Waivers",
-					"subtitle": "I am the sole owner of the work, and any and all third party interests have been cleared  (e.g., model release, co-owner, publicity rights, etc.)",
-					"type": "radio",
-					"id": "waiver-radio",
-					"options": [
-						"Yes",
-						"No"
+						{
+							"text": "Internal use",
+							"tooltip": true,
+							"tooltip-text": "(e.g., presentation, brochure or newsletter for employees, closed internal network, social media or website that is available only to employees)"
+						},
+						{
+							"text": "External use",
+							"tooltip": true,
+							"tooltip-text": "(e.g., advertisement, campaign,  product or service sold to third parties, website, Facebook page or blog)"
+						}
 					]
 				}
 			]

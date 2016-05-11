@@ -1,9 +1,9 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, jsonify
 
 from copyright import db
 from copyright.models import *
 
-import requests, datetime, stripe, sys
+import requests, datetime, stripe, sys, json
 
 # required for S3 storage and image processing
 import os, hashlib, boto, StringIO
@@ -47,12 +47,17 @@ def register_license():
         else:
             # get form params
             stripe_id = request.form['stripe_id']
-            allow_commercial = request.form['allow_commercial']
-            allow_derivative = int(request.form['allow_derivative'])
-            price_base = request.form['price_base']
-            price_commercial = request.form['price_commercial']
-            price_derivative = request.form['price_derivative']
-            description = request.form['description']
+            category = request.form['category']
+            edit_privilege = request.form['edit_privilege']
+            credit_format = request.form['credit_format']
+            credit_receiver = request.form['credit_receiver']
+            keywords = request.form['keywords']
+            price_internal_1 = request.form['price00']
+            price_internal_2_50 = request.form['price10']
+            price_internal_51 = request.form['price20']
+            price_external_1 = request.form['price01']
+            price_external_2_50 = request.form['price11']
+            price_external_51 = request.form['price21']
 
             # process image
             filename_full = secure_filename(sha1_hash+getFileExt(imageFile.filename))
@@ -108,7 +113,8 @@ def register_license():
             newImage.url_full = url_full
             newImage.url_thumb = url_thumb
             newImage.date_uploaded = now
-            newImage.description = description
+            newImage.keywords = keywords
+            newImage.category = category
             # newImage.tags = "" # TODO
             newImage.num_clicks = 0
             newImage.num_purchases = 0
@@ -118,11 +124,12 @@ def register_license():
             newLicense.creator = creator
             newLicense.active = True
             newLicense.date_created = now
-            newLicense.allow_commercial = allow_commercial
-            newLicense.allow_derivative = allow_derivative
-            newLicense.price_base = price_base
-            newLicense.price_commercial = price_commercial
-            newLicense.price_derivative = price_derivative
+            newLicense.price_internal_1 = price_internal_1
+            newLicense.price_internal_2_50 = price_internal_2_50
+            newLicense.price_internal_51 = price_internal_51
+            newLicense.price_external_1 = price_external_1
+            newLicense.price_external_2_50 = price_external_2_50
+            newLicense.price_external_51 = price_external_51
 
             db.session.add(newImage)
             db.session.add(newLicense)
