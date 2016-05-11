@@ -31,6 +31,7 @@ $.get('/licensing-protocol', function(response) {
 			// make a new group object to be built up
 			var $group = $('<div class="form-group">');
 			if (question.id) $group.attr('id', question.id);
+			if (question.hasOwnProperty('visible')) $group.toggle(question.visible);
 
 			// append the title of the question
 			if (question.title) {
@@ -132,6 +133,19 @@ $.get('/licensing-protocol', function(response) {
 		// if disabling, also set all values to 0
 		if (disable) {
 			$('#price-matrix').find('input').val(0);
+		}
+	});
+
+	// listener on #credit-format
+	$('#credit-format').on('change', function(event) {
+		// show if either of the firt two options are checked
+		var show = $(this).find('input').prop('checked') ||
+			$($(this).find('input').get(1)).prop('checked');
+		$('#credit-receiver').toggle(show);
+
+		// if not showing, also empty the credit input
+		if (!show) {
+			$('#credit-receiver > input').val('');
 		}
 	});
 });

@@ -35,6 +35,7 @@
 					"title": "How do you want to be credited?",
 					"type": "check",
 					"name": "credit_format",
+					"id": "credit-format",
 					"options": [
 						"Image Already Includes Credit (e.g., watermark, embedded credit)",
 						"Text Near the Image (e.g., text at the website)",
@@ -42,13 +43,11 @@
 					]
 				},
 				{
-					"condition": {
-						"question": 0,
-						"option": 1
-					},
 					"title": "Who do you want credit to be given?",
 					"placeholder": "&copy; 2016 John Doe",
 					"type": "text",
+					"id": "credit-receiver",
+					"visible": false,
 					"name": "credit_receiver"
 				},
 				{
