@@ -108,7 +108,7 @@
 							"tooltip-text": "(e.g., presentation, brochure or newsletter for employees, closed internal network, social media or website that is available only to employees)"
 						},
 						{
-							"text": "External use",
+							"text": "External & Internal use",
 							"tooltip": true,
 							"tooltip-text": "(e.g., advertisement, campaign,  product or service sold to third parties, website, Facebook page or blog)"
 						}

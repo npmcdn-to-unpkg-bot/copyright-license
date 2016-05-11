@@ -31,7 +31,9 @@ def create():
 @createRoutes.route('/register', methods=['POST'])
 def register_license():
     imageFile = request.files['imageFile']
-
+    import sys
+    print 'test'
+    sys.stdout.flush()
     success = True
     justification = ''
 
@@ -39,13 +41,18 @@ def register_license():
 
         # calculate SHA1 hash of image file
         sha1_hash = hashlib.sha1(imageFile.read()).hexdigest()
-
+        import sys
+        print sha1_hash
+        sys.stdout.flush()
         if Image.query.filter_by(sha1_hash=sha1_hash).first() != None:
             success = False
             justification = 'That image has already been registered'
 
         else:
             # get form params
+            for key in request.form:
+                print key, request.form[key]
+            sys.stdout.flush()
             stripe_id = request.form['stripe_id']
             category = request.form['category']
             edit_privilege = request.form['edit_privilege']
@@ -58,6 +65,8 @@ def register_license():
             price_external_1 = request.form['price01']
             price_external_2_50 = request.form['price11']
             price_external_51 = request.form['price21']
+            print 'test'
+            sys.stdout.flush()
 
             # process image
             filename_full = secure_filename(sha1_hash+getFileExt(imageFile.filename))
@@ -72,12 +81,18 @@ def register_license():
                 success = False
                 justification = str(e)
 
+            print 'test'
+            sys.stdout.flush()
+
             # reset cursor of image file after reading it to create the thumbnail
             imageFile.seek(0)
 
             # connect to Amazon S3
             s3 = boto.connect_s3()
             bucket = s3.get_bucket(app.config['AWS_S3_BUCKET_NAME'])
+
+            print 'test'
+            sys.stdout.flush()
 
             # upload full image
             key = bucket.new_key(filename_full)
@@ -89,6 +104,9 @@ def register_license():
             key_thumb = bucket.new_key(filename_thumb)
             key_thumb.set_contents_from_string(output.getvalue(), headers={"Content-Type": "image/jpeg"})
             key_thumb.set_acl("public-read")
+
+            print 'test'
+            sys.stdout.flush()
             
             url_full = key.generate_url(expires_in=0, query_auth=False)
             url_thumb = key_thumb.generate_url(expires_in=0, query_auth=False)
