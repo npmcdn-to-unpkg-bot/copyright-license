@@ -41,7 +41,7 @@ def search():
     if request.method == 'POST' and request.form['searchText'] != '':
         searchText = '%' + request.form['searchText'] + '%'
         # use ilike() to get case-insensitive search
-        images = Image.query.filter(Image.description.ilike(searchText)) \
+        images = Image.query.filter(Image.keywords.ilike(searchText)) \
                             .order_by(desc(2*Image.num_purchases + Image.num_clicks)) \
                             .all()
     else: # GET

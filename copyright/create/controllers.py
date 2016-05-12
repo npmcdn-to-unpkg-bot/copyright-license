@@ -54,9 +54,9 @@ def register_license():
                 print key, request.form[key]
             sys.stdout.flush()
             stripe_id = request.form['stripe_id']
-            category = request.form['category']
+            categories = request.form['categories']
             edit_privilege = request.form['edit_privilege']
-            credit_format = request.form['credit_format']
+            credit_type = request.form['credit_type']
             credit_receiver = request.form['credit_receiver']
             keywords = request.form['keywords']
             price_internal_1 = request.form['price00']
@@ -132,8 +132,7 @@ def register_license():
             newImage.url_thumb = url_thumb
             newImage.date_uploaded = now
             newImage.keywords = keywords
-            newImage.category = category
-            # newImage.tags = "" # TODO
+            newImage.categories = categories
             newImage.num_clicks = 0
             newImage.num_purchases = 0
 

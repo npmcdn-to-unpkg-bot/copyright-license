@@ -37,7 +37,6 @@
 					"name": "credit_type",
 					"id": "credit-type",
 					"options": [
-						// TODO: no credit is 0, already includes is 1, near is 2
 						"Image Already Includes Credit (e.g., watermark, embedded credit)",
 						"Text Near the Image (e.g., text at the website)",
 						"No Credit (do not want credit)"
@@ -57,7 +56,6 @@
 					"type": "radio",
 					"name": "edit_privilege",
 					"options": [
-					// TODO: no is 0, yes is 1, minor edits is 2
 						"Yes (edit as desired)",
 						"Only minor edits allowed (e.g., crop, color shift, flip, and resize)",
 						"No (\"as is\" use only)"
