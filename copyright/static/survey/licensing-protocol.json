@@ -7,7 +7,7 @@
 				{
 					"title": "Description of the Work",
 					"type": "check",
-					"name": "category",
+					"name": "categories",
 					"options": [
 						"Animals, Plants & Nature",
 						"Architecture",
@@ -34,9 +34,10 @@
 				{
 					"title": "How do you want to be credited?",
 					"type": "check",
-					"name": "credit_format",
-					"id": "credit-format",
+					"name": "credit_type",
+					"id": "credit-type",
 					"options": [
+						// TODO: no credit is 0, already includes is 1, near is 2
 						"Image Already Includes Credit (e.g., watermark, embedded credit)",
 						"Text Near the Image (e.g., text at the website)",
 						"No Credit (do not want credit)"
@@ -47,8 +48,8 @@
 					"placeholder": "&copy; 2016 John Doe",
 					"type": "text",
 					"id": "credit-receiver",
-					"visible": false,
-					"name": "credit_receiver"
+					"name": "credit_receiver",
+					"visible": false
 				},
 				{
 					"title": "Can the licensee edit the image?",
@@ -56,8 +57,9 @@
 					"type": "radio",
 					"name": "edit_privilege",
 					"options": [
+					// TODO: no is 0, yes is 1, minor edits is 2
 						"Yes (edit as desired)",
-						"Minor edits (e.g., crop, color shift, resize)",
+						"Only minor edits allowed (e.g., crop, color shift, flip, and resize)",
 						"No (\"as is\" use only)"
 					]
 				}
@@ -88,29 +90,29 @@
 						{
 							"text": "1 person",
 							"tooltip": true,
-							"tooltip-text": "(e.g., self employed, blogger, student)"
+							"tooltip-text": "e.g., self employed, blogger, student"
 						},
 						{
 							"text": "2-50 people",
 							"tooltip": true,
-							"tooltip-text": "(e.g., SME's)"
+							"tooltip-text": "e.g., SME's"
 						},
 						{
 							"text": "51+ people",
 							"tooltip": true,
-							"tooltip-text": "(e.g., large corporations, NGO's, universities, governmental agencies)"
+							"tooltip-text": "e.g., large corporations, NGO's, universities, governmental agencies"
 						}
 					],
 					"cols": [
 						{
 							"text": "Internal use",
 							"tooltip": true,
-							"tooltip-text": "(e.g., presentation, brochure or newsletter for employees, closed internal network, social media or website that is available only to employees)"
+							"tooltip-text": "e.g., presentation, brochure or newsletter for employees, closed internal network, social media or website that is available only to employees"
 						},
 						{
 							"text": "External & Internal use",
 							"tooltip": true,
-							"tooltip-text": "(e.g., advertisement, campaign,  product or service sold to third parties, website, Facebook page or blog)"
+							"tooltip-text": "e.g., advertisement, campaign,  product or service sold to third parties, website, Facebook page or blog"
 						}
 					]
 				}
