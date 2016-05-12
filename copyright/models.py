@@ -17,12 +17,12 @@ class Image(db.Model):
     tags = db.Column(db.String())
     num_clicks = db.Column(db.Integer)
     num_purchases = db.Column(db.Integer)
+    categories = db.Column(db.String()) # comma separated
+    keywords = db.Column(db.String())
+    date_taken = db.Column(db.DateTime())
 
     # optional fields
-    category = db.Column(db.String())
-    description = db.Column(db.String())
-    location_take = db.Column(db.String())
-    date_taken = db.Column(db.DateTime())
+    # location_take = db.Column(db.String())
 
     # relationships
     creator = db.relationship('User', back_populates='created_images')
@@ -78,16 +78,20 @@ class License(db.Model):
         # 0: Do not want credit
         # 1: Image Already Includes Credit (e.g., watermark, embedded credit)
         # 2: Text Near the Image (e.g., text at the website)
-    credit_entity = db.Column(db.String())
+    credit_receiver = db.Column(db.String())
         # only filled out if "Text Near the Image" is selected
-    allow_commercial = db.Column(db.Boolean)
-    allow_derivative = db.Column(db.Integer)
-        # 0: No edits allowed
-        # 1: Edits allowed
-        # 2: Minor edits only (e.g., crop, color shift, resize)
-    price_base = db.Column(db.Integer)
-    price_commercial = db.Column(db.Integer)
-    price_derivative = db.Column(db.Integer)
+    edit_privilege = db.Column(db.Integer)
+        # 0: No ("as is" only)
+        # 1: Yes (anything)
+        # 2: only minor edits
+
+    # in cents
+    price_internal_1 = db.Column(db.Integer)
+    price_internal_2_50 = db.Column(db.Integer)
+    price_internal_51 = db.Column(db.Integer)
+    price_external_1 = db.Column(db.Integer)
+    price_external_2_50 = db.Column(db.Integer)
+    price_external_51 = db.Column(db.Integer)
     
     # relationships
     image = db.relationship('Image', back_populates='license')
@@ -112,8 +116,16 @@ class Receipt(db.Model):
     seller_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     license_id = db.Column(db.Integer, db.ForeignKey('licenses.id'))
     transaction_date = db.Column(db.DateTime())
-    is_commercial = db.Column(db.Boolean)
-    is_derivative = db.Column(db.Boolean)
+    credit_type = db.Column(db.Integer)
+        # 0: Do not want credit
+        # 1: Image Already Includes Credit (e.g., watermark, embedded credit)
+        # 2: Text Near the Image (e.g., text at the website)
+    credit_receiver = db.Column(db.String())
+        # only filled out if "Text Near the Image" is selected
+    edit_privilege = db.Column(db.Integer)
+        # 0: No ("as is" only)
+        # 1: Yes (anything)
+        # 2: only minor edits
     price = db.Column(db.Integer)
     stripe_email = db.Column(db.String())
 
