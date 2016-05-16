@@ -1,0 +1,23 @@
+/* ---------- Image styles ---------- */
+/* General image styles
+* max-width to ensure images don't overwhelm the screen
+* margin-bottom to add a vertical getter
+*/
+.masonry-image>img {
+  max-width: 350px;
+  margin-bottom: 10px;
+}
+
+/* Hover interaction
+* set opacity
+* add a shadow
+*/
+.masonry-image>img:hover {
+  opacity: .75;
+  box-shadow: 0px 0px 30px #000;
+}
+
+.filter-col{
+	padding-left: 10px;
+	padding-right: 10px;
+}

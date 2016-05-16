@@ -35,17 +35,19 @@ def login():
     return render_template('login.html')
 
 
-@homeRoutes.route('/search', methods=['GET', 'POST'])
+@homeRoutes.route('/search')
 def search():
-    images = []
-    if request.method == 'POST' and request.form['searchText'] != '':
-        searchText = '%' + request.form['searchText'] + '%'
-        # use ilike() to get case-insensitive search
-        images = Image.query.filter(Image.keywords.ilike(searchText)) \
-                            .order_by(desc(2*Image.num_purchases + Image.num_clicks)) \
-                            .all()
-    else: # GET
-        images = Image.query.order_by(desc(2*Image.num_purchases + Image.num_clicks)).all()
+    searchText = '%' + request.args.get('searchText') + '%'
+    category = request.args.get('category')
+
+    # use ilike() to get case-insensitive search
+    images = Image.query.filter(Image.keywords.ilike(searchText))
+
+    if category != None or category != -1:
+        images = images.filter(Image.categories)
+
+    images = images.order_by(desc(2*Image.num_purchases + Image.num_clicks)) \
+                   .all()
     pages = list(range(1, int(ceil(len(images) / float(images_per_page)) + 1)))
     return render_template('search.html', images=images[0:images_per_page], pages=pages)
 
