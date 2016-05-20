@@ -43,8 +43,8 @@ def search():
     # use ilike() to get case-insensitive search
     images = Image.query.filter(Image.keywords.ilike(searchText))
 
-    if category != None or category != -1:
-        images = images.filter(Image.categories)
+    if category and int(category) != -1:
+        images = images.filter(Image.categories.any(id=int(category)))
 
     images = images.order_by(desc(2*Image.num_purchases + Image.num_clicks)) \
                    .all()

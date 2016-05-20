@@ -32,7 +32,6 @@ def create():
 @createRoutes.route('/register', methods=['POST'])
 def register_license():
     imageFile = request.files['imageFile']
-    import sys
     print 'test'
     sys.stdout.flush()
     success = True
@@ -218,7 +217,7 @@ def createThumbnailWithWatermark(imageFile, text="COPYRIGHT", opacity=0.5):
     # determine the maximum font size that will fit the image
     # try to use the Arial font, but otherwise use whatever is available
     n_font = None
-    n_width, n_height, size = 0
+    n_width = n_height = size = 0
     try:
         # iteratively increase the font size until it is larger than fits
         while (n_width+n_height < watermark.size[0]) or (n_width+n_height < watermark.size[1]):
