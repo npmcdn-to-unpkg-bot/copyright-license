@@ -56,8 +56,23 @@
 			"title": "Credit, Attribution & Integrity of the Work",
 			"questions": [
 				{
+					"title": "Do you want to be credited?",
+					"type": "radio",
+					"name": "credit",
+					"options": [
+						{
+							"text": "Yes",
+							"value": 1
+						},
+						{
+							"text": "No",
+							"value": 2
+						}
+					]
+				},
+				{
 					"title": "How do you want to be credited?",
-					"type": "check",
+					"type": "radio",
 					"name": "credit_type",
 					"options": [
 						{
@@ -67,10 +82,6 @@
 						{
 							"text": "Text Near the Image (e.g., text at the website)",
 							"value": 2
-						},
-						{
-							"text": "No Credit (do not want credit)",
-							"value": 0
 						}
 					]
 				},
