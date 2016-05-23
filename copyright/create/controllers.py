@@ -134,10 +134,6 @@ def register_license():
         newImage = Image()
         newImage.sha1_hash = sha1_hash
         newImage.creator_id = creator.id
-        newImage.edit_privilege = edit_privilege
-        if credit:
-            newImage.credit_type = credit_type
-            newImage.credit_receiver = credit_receiver
         newImage.url_full = url_full
         newImage.url_thumb = url_thumb
         newImage.date_uploaded = now
@@ -153,6 +149,10 @@ def register_license():
         newLicense.creator = creator
         newLicense.active = True
         newLicense.date_created = now
+        if credit:
+            newLicense.credit_type = credit_type
+            newLicense.credit_receiver = credit_receiver
+        newLicense.edit_privilege = edit_privilege
         newLicense.price_internal_1 = price_internal_1
         newLicense.price_internal_2_50 = price_internal_2_50
         newLicense.price_internal_51 = price_internal_51

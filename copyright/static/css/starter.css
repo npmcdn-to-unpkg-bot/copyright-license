@@ -4,6 +4,10 @@ body {
   box-sizing: border-box;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 .starter-template {
   padding: 40px 15px;
 }

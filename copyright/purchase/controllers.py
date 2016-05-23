@@ -49,14 +49,6 @@ def charge():
 
     image.num_purchases += 1
 
-    # is_commercial = False
-    # if license.allow_commercial:
-    #     is_commercial = (request.form['is_commercial'] == 'True')
-
-    # is_derivative = False
-    # if license.allow_derivative:
-    #     is_derivative = (request.form['is_derivative'] == 'True')
-
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
     customer = stripe.Customer.create(
@@ -68,16 +60,10 @@ def charge():
     newReceipt.license_id = license_id
     newReceipt.image_id = image_id
     newReceipt.transaction_date = datetime.datetime.now()
-    # newReceipt.is_commercial = is_commercial
-    # newReceipt.is_derivative = is_derivative
     newReceipt.stripe_email = customer.email
 
     # calculate price
-    total_price = license.price_internal_1
-    # if is_commercial:
-    #     total_price += license.price_commercial
-    # if is_derivative:
-    #     total_price += license.price_derivative
+    total_price = license.price_internal_1 # TODO: change to dynamically reflect user choice
     newReceipt.price = total_price
 
     if Receipt.query.filter_by(license_id=newReceipt.license_id, stripe_email=newReceipt.stripe_email).all():

@@ -88,13 +88,13 @@ class License(db.Model):
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     active = db.Column(db.Boolean)
     date_created = db.Column(db.DateTime) # date that license was created
-    credit_type = db.Column(db.Integer)
+    credit_type = db.Column(db.Integer, default=0)
         # 0: Do not want credit
         # 1: Image Already Includes Credit (e.g., watermark, embedded credit)
         # 2: Text Near the Image (e.g., text at the website)
     credit_receiver = db.Column(db.String)
         # only filled out if "Text Near the Image" is selected
-    edit_privilege = db.Column(db.Integer)
+    edit_privilege = db.Column(db.Integer, default=0)
         # 0: No ("as is" only)
         # 1: Yes (anything)
         # 2: only minor edits
