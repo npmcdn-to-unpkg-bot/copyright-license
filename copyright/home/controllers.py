@@ -84,16 +84,17 @@ def submit_feedback():
     db.session.add(newFeedback)
 
     fromaddr = "copyrightfeedback@gmail.com"
-    toaddr = "chrisyeh@stanford.edu"
+    toaddr = ['chrisyeh@stanford.edu', 'rbarcelo@stanford.edu']
+    COMMASPACE = ', '
     msg = MIMEMultipart()
     msg['From'] = fromaddr
-    msg['To'] = toaddr
+    msg['To'] = COMMASPACE.join(toaddr)
     msg['Subject'] = "You've received new feedback."
     body = "According to one user, \"" + request.form['feedback'] + "\""
     msg.attach(MIMEText(body, 'plain'))
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login(fromaddr, "m=C]eL/#R8=Zzejn")
+    server.login(fromaddr, app.config['EMAIL_PASSWORD'])
     text = msg.as_string()
     server.sendmail(fromaddr, toaddr, text)
     server.quit()
