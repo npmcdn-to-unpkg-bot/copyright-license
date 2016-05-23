@@ -5,6 +5,9 @@
 
 // ---------------------------------------------- initialization
 
+// hide the "how do you want to be credited?" question for now
+$('#credit_type-wrapper').toggle(false);
+
 // set the table inputs to 0
 $('table input').val(0);
 
@@ -45,4 +48,10 @@ $('#submit-btn').on('click', function(event) {
 	$('[name]').forEach(function(elem) {
 		console.log(elem);
 	});
+});
+
+// listener for whether to show the credit type question,
+// where 1 is the value for showing and 2 is value for hiding
+$('#credit-wrapper').on('click', 'input', function(event) {
+	$('#credit_type-wrapper').toggle($(this).val() === '1');
 });

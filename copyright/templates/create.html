@@ -19,7 +19,7 @@
   </ol>
 
   {% if not token %}
-    <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write">
+    <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write&amp;redirect_uri=http://localhost:5000/oauth/callback">
       <img src="/static/images/stripe.png">
     </a>
   {% else %}
@@ -53,51 +53,53 @@
       {% for section in licensing_protocol.sections %}
         {% if section.title %}<h3>{{ section.title }}</h3>{% endif %}
         {% for question in section.questions %}
-          {% if question.title %}<h4>{{ question.title }}</h4>{% endif %}
-          {% if question.subtitle %}<h5>{{ question.subtitle }}</h5>{% endif %}
-          {% if question.type == "check" %}
-            {% for option in question.options %}
-              <div class="checkbox">
-                <label>
-                  <input id="{{ question.name }}" type="checkbox" name="{{ question.name }}" value="{{ option.value }}">
-                  {{ option.text }}
-                </label>
-              </div>
-            {% endfor %}
-          {% elif question.type == "radio" %}
-            {% for option in question.options %}
-              <div class="radio">
-                <label>
-                  <input id="{{ question.name }}" type="radio" name="{{ question.name }}" value="{{ option.value }}">
-                  {{ option.text }}
-                </label>
-              </div>
-            {% endfor %}
-          {% elif question.type == "text" %}
-            <input type="text" class="form-control" placeholder="{{ question.placeholder }}" name="{{ question.name }}">
-          {% elif question.type == "table" %}
-            <table class="table">
-              <tr>
-                <th></th>
-                {% for col in question.cols %}
-                  <th data-toggle="tooltip" data-placement="{{ col.tooltipPlacement }}" title="{{ col.tooltipText }}">{{ col.text }}</th>
+          <div id="{{ question.name }}-wrapper">
+            {% if question.title %}<h4 id="{{ question.name }}">{{ question.title }}</h4>{% endif %}
+            {% if question.subtitle %}<h5>{{ question.subtitle }}</h5>{% endif %}
+            {% if question.type == "check" %}
+              {% for option in question.options %}
+                <div class="checkbox">
+                  <label>
+                    <input id="{{ question.name }}" type="checkbox" name="{{ question.name }}" value="{{ option.value }}">
+                    {{ option.text }}
+                  </label>
+                </div>
+              {% endfor %}
+            {% elif question.type == "radio" %}
+                {% for option in question.options %}
+                  <div class="radio">
+                    <label>
+                      <input id="{{ question.name }}" type="radio" name="{{ question.name }}" value="{{ option.value }}">
+                      {{ option.text }}
+                    </label>
+                  </div>
                 {% endfor %}
-              </tr>
-              {% for row in question.rows %}
+            {% elif question.type == "text" %}
+              <input type="text" class="form-control" placeholder="{{ question.placeholder }}" name="{{ question.name }}">
+            {% elif question.type == "table" %}
+              <table class="table">
                 <tr>
-                  <th data-toggle="tooltip" data-placement="{{ row.tooltipPlacement }}" title="{{ row.tooltipText }}">{{ row.text }}</th>
+                  <th></th>
                   {% for col in question.cols %}
-                    <td>
-                      <div class="input-group">
-                        <span class="input-group-addon">$</span>
-                        <input type="number" class="form-control" name="price{{ row.name }}{{ col.name }}" step="0.01" min="0">
-                      </div>
-                    </td>
+                    <th data-toggle="tooltip" data-placement="{{ col.tooltipPlacement }}" title="{{ col.tooltipText }}">{{ col.text }}</th>
                   {% endfor %}
                 </tr>
-              {% endfor %}
-            </table>
-          {% endif %}
+                {% for row in question.rows %}
+                  <tr>
+                    <th data-toggle="tooltip" data-placement="{{ row.tooltipPlacement }}" title="{{ row.tooltipText }}">{{ row.text }}</th>
+                    {% for col in question.cols %}
+                      <td>
+                        <div class="input-group">
+                          <span class="input-group-addon">$</span>
+                          <input type="number" class="form-control" name="price{{ row.name }}{{ col.name }}" step="0.01" min="0">
+                        </div>
+                      </td>
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </table>
+            {% endif %}
+          </div>
         {% endfor %}
       {% endfor %}
 
@@ -114,5 +116,7 @@
 
 {% block scripts %}
   <script type="text/javascript" src="../static/js/upload.js"></script>
-  <script type="text/javascript" src="../static/js/licensing-protocol.js"></script>
+  {% if token %}
+    <script type="text/javascript" src="../static/js/licensing-protocol.js"></script>
+  {% endif %}
 {% endblock %}
