@@ -6,7 +6,7 @@ from copyright.models import *
 import requests, datetime, stripe, sys, json
 
 # required for S3 storage and image processing
-import os, hashlib, boto, StringIO, math
+import os, hashlib, boto3, StringIO, math
 from werkzeug import secure_filename
 from PIL import Image as PilImage # don't want Image to conflict with our Image() model class
 from PIL import ImageDraw, ImageFont, ImageEnhance
@@ -32,132 +32,143 @@ def create():
 @createRoutes.route('/register', methods=['POST'])
 def register_license():
     imageFile = request.files['imageFile']
-    print 'test'
-    sys.stdout.flush()
+
     success = True
     justification = ''
 
-    if imageFile and allowed_file(imageFile.filename):
+    ## ERROR CHECKING ##
 
-        # calculate SHA1 hash of image file
-        sha1_hash = hashlib.sha1(imageFile.read()).hexdigest()
-        import sys
-        print sha1_hash
-        sys.stdout.flush()
-        if Image.query.filter_by(sha1_hash=sha1_hash).first() != None:
-            success = False
-            justification = 'That image has already been registered'
-
-        else:
-            # get form params
-            for key in request.form:
-                print key
-            sys.stdout.flush()
-            stripe_id = request.form['stripe_id']
-            categories = request.form['categories']
-            edit_privilege = request.form['edit_privilege']
-            credit_type = request.form['credit_type']
-            credit_receiver = request.form['credit_receiver']
-            keywords = request.form['keywords']
-            price_internal_1 = request.form['price11']
-            price_internal_2_50 = request.form['price21']
-            price_internal_51 = request.form['price31']
-            price_external_1 = request.form['price12']
-            price_external_2_50 = request.form['price22']
-            price_external_51 = request.form['price32']
-            print 'test'
-            sys.stdout.flush()
-
-            # process image
-            filename_full = secure_filename(sha1_hash+getFileExt(imageFile.filename))
-            
-            # create thumbnail
-            # thumbnailImageAsString is of type StringIO
-            thumbnailImageAsString = None
-            try:
-                thumbnailImageAsString = createThumbnailWithWatermark(imageFile)
-                print "Created watermarked image thumbnail"
-                sys.stdout.flush()
-            except Exception as e:
-                print "Reached exception"
-                sys.stdout.flush()
-                success = False
-                justification = str(e)
-
-            print 'test'
-            sys.stdout.flush()
-
-            # reset cursor of image file after reading it to create the thumbnail
-            imageFile.seek(0)
-
-            # connect to Amazon S3
-            s3 = boto.connect_s3()
-            bucket = s3.get_bucket(app.config['AWS_S3_BUCKET_NAME'])
-
-            print 'test'
-            sys.stdout.flush()
-
-            # upload full image
-            key = bucket.new_key(filename_full)
-            key.set_contents_from_file(imageFile)
-            key.set_acl("public-read")
-
-            # upload thumbnail image
-            filename_thumb = filename_full + "_thumb200.jpg"
-            key_thumb = bucket.new_key(filename_thumb)
-            key_thumb.set_contents_from_string(thumbnailImageAsString, headers={"Content-Type": "image/jpeg"})
-            key_thumb.set_acl("public-read")
-
-            print 'test'
-            sys.stdout.flush()
-            
-            url_full = key.generate_url(expires_in=0, query_auth=False)
-            url_thumb = key_thumb.generate_url(expires_in=0, query_auth=False)
-
-            now = datetime.datetime.now()
-
-            # check if user already exists
-            # TODO: once we implement a user login system, this needs to be
-            #   largely redone
-            creator = User.query.filter_by(stripe_id=stripe_id).first()
-            if not creator:
-                creator = User()
-                creator.stripe_id = stripe_id
-                creator.date_created = now
-                creator.active = True
-                db.session.add(creator)
-                db.session.commit()
-
-            newImage = Image()
-            newImage.sha1_hash = sha1_hash
-            newImage.creator_id = creator.id
-            newImage.url_full = url_full
-            newImage.url_thumb = url_thumb
-            newImage.date_uploaded = now
-            newImage.keywords = keywords
-            newImage.categories = categories
-            newImage.num_clicks = 0
-            newImage.num_purchases = 0
-
-            newLicense = License()
-            newLicense.image = newImage
-            newLicense.creator = creator
-            newLicense.active = True
-            newLicense.date_created = now
-            newLicense.price_internal_1 = price_internal_1
-            newLicense.price_internal_2_50 = price_internal_2_50
-            newLicense.price_internal_51 = price_internal_51
-            newLicense.price_external_1 = price_external_1
-            newLicense.price_external_2_50 = price_external_2_50
-            newLicense.price_external_51 = price_external_51
-
-            db.session.add(newImage)
-            db.session.add(newLicense)
-            db.session.commit()
-
-    else:
+    if not imageFile or not allowed_file(imageFile.filename):
         success = False
         justification = 'Invalid Image File'
+        return render_template('creation-outcome.html', success=success, justification=justification)
+
+    # calculate SHA1 hash of image file
+    sha1_hash = hashlib.sha1(imageFile.read()).hexdigest()
+    if Image.query.filter_by(sha1_hash=sha1_hash).first() != None:
+        success = False
+        justification = 'That image has already been registered'
+        return render_template('creation-outcome.html', success=success, justification=justification)
+
+    ## END ERROR CHECKING ##
+
+    # get form params
+    for key in request.form:
+        print key
+    sys.stdout.flush()
+    stripe_id = request.form['stripe_id']
+    categories = request.form.getlist('categories') # list of strings, ie. ['3', '4']
+    edit_privilege = request.form['edit_privilege']
+    credit = request.form['credit']
+    credit_type = request.form['credit_type']
+    credit_receiver = request.form['credit_receiver']
+    keywords = request.form['keywords']
+    price_internal_1 = convertDollarsToCents(request.form['price11'])
+    price_internal_2_50 = convertDollarsToCents(request.form['price21'])
+    price_internal_51 = convertDollarsToCents(request.form['price31'])
+    price_external_1 = convertDollarsToCents(request.form['price12'])
+    price_external_2_50 = convertDollarsToCents(request.form['price22'])
+    price_external_51 = convertDollarsToCents(request.form['price32'])
+    print 'test'
+    sys.stdout.flush()
+
+    # process image
+    filename_full = secure_filename(sha1_hash+getFileExt(imageFile.filename))
+    
+    # create thumbnail
+    # thumbnailImageAsString is of type StringIO
+    thumbnailImageAsString = None
+    try:
+        thumbnailImageAsString = createThumbnailWithWatermark(imageFile)
+        print "Created watermarked image thumbnail"
+        sys.stdout.flush()
+
+        # reset cursor of image file after reading it to create the thumbnail
+        imageFile.seek(0)
+
+        # connect to Amazon S3
+        s3_client = boto3.client('s3',
+          aws_access_key_id=app.config['AWS_ACCESS_KEY_ID'],
+          aws_secret_access_key=app.config['AWS_SECRET_ACCESS_KEY']
+        )
+
+        s3 = boto3.resource('s3')
+        bucket = app.config['AWS_S3_BUCKET_NAME']
+
+        # upload full image
+        # key = s3.Object(bucket, filename_full)
+        s3_client.put_object(
+            Body=imageFile,
+            Bucket=bucket,
+            Key=filename_full,
+            ACL="public-read"
+        )
+
+        # upload thumbnail image
+        filename_thumb = filename_full + "_thumb200.jpg"
+        s3_client.put_object(
+            Body=thumbnailImageAsString,
+            Bucket=bucket,
+            Key=filename_thumb,
+            ContentType="image/jpeg",
+            ACL="public-read"
+        )
+
+        # brute-forcing this for now. eventually should look into s3_client.generate_presigned_url()
+        url_full = 'https://{}.s3.amazonaws.com/{}'.format(bucket, filename_full)
+        url_thumb = 'https://{}.s3.amazonaws.com/{}'.format(bucket, filename_thumb)
+
+        now = datetime.datetime.now()
+
+        # check if user already exists
+        # TODO: once we implement a user login system, this needs to be
+        #   largely redone
+        creator = User.query.filter_by(stripe_id=stripe_id).first()
+        if not creator:
+            creator = User()
+            creator.stripe_id = stripe_id
+            creator.date_created = now
+            creator.active = True
+            db.session.add(creator)
+
+        newImage = Image()
+        newImage.sha1_hash = sha1_hash
+        newImage.creator_id = creator.id
+        newImage.edit_privilege = edit_privilege
+        if credit:
+            newImage.credit_type = credit_type
+            newImage.credit_receiver = credit_receiver
+        newImage.url_full = url_full
+        newImage.url_thumb = url_thumb
+        newImage.date_uploaded = now
+        newImage.keywords = keywords
+        if categories:
+            for category in categories:
+                newImage.categories.append(Category.query.get(int(category)))
+        newImage.num_clicks = 0
+        newImage.num_purchases = 0
+
+        newLicense = License()
+        newLicense.image = newImage
+        newLicense.creator = creator
+        newLicense.active = True
+        newLicense.date_created = now
+        newLicense.price_internal_1 = price_internal_1
+        newLicense.price_internal_2_50 = price_internal_2_50
+        newLicense.price_internal_51 = price_internal_51
+        newLicense.price_external_1 = price_external_1
+        newLicense.price_external_2_50 = price_external_2_50
+        newLicense.price_external_51 = price_external_51
+
+        db.session.add(newImage)
+        db.session.add(newLicense)
+        db.session.commit()
+
+    except Exception as e:
+        print "Reached exception"
+        sys.stdout.flush()
+        success = False
+        justification = str(e)
 
     return render_template('creation-outcome.html', success=success, justification=justification)
 
@@ -195,6 +206,12 @@ def randomString(N):
 # get file extension (including the dot): "picture.jpg" -> ".jpg"
 def getFileExt(filename):
     return os.path.splitext(filename)[1]
+
+def convertDollarsToCents(inputStr):
+    if not inputStr:
+        return 0
+    return round(float(inputStr)*100)
+
 
 # create a watermarked thumbnail of the given image, returns it as a binary string
 # for convenient upload to Amazon S3

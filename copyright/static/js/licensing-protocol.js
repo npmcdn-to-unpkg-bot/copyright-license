@@ -45,7 +45,7 @@ $('#credit-format').on('change', function(event) {
 
 // when the form is submitted
 $('#submit-btn').on('click', function(event) {
-	$('[name]').forEach(function(elem) {
+	$('[name]').each(function(elem) {
 		console.log(elem);
 	});
 });
