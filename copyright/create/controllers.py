@@ -52,7 +52,7 @@ def register_license():
         else:
             # get form params
             for key in request.form:
-                print key, request.form[key]
+                print key
             sys.stdout.flush()
             stripe_id = request.form['stripe_id']
             categories = request.form['categories']
@@ -60,12 +60,12 @@ def register_license():
             credit_type = request.form['credit_type']
             credit_receiver = request.form['credit_receiver']
             keywords = request.form['keywords']
-            price_internal_1 = request.form['price00']
-            price_internal_2_50 = request.form['price10']
-            price_internal_51 = request.form['price20']
-            price_external_1 = request.form['price01']
-            price_external_2_50 = request.form['price11']
-            price_external_51 = request.form['price21']
+            price_internal_1 = request.form['price11']
+            price_internal_2_50 = request.form['price21']
+            price_internal_51 = request.form['price31']
+            price_external_1 = request.form['price12']
+            price_external_2_50 = request.form['price22']
+            price_external_51 = request.form['price32']
             print 'test'
             sys.stdout.flush()
 
@@ -180,14 +180,10 @@ def callback():
     token = resp.get('access_token', None)
     stripe_id = resp.get('stripe_user_id', "(Didn't get an ID from Stripe)")
     access_key = resp.get('stripe_publishable_key', None)
-    return render_template('create.html', token=token, stripe_id=stripe_id, stripe_key=access_key)
-
-@createRoutes.route('/licensing-protocol')
-def protocol():
-    return jsonify(json.load(open('./copyright/static/survey/licensing-protocol.json', 'rb')))
+    return render_template('create.html', token=token, stripe_id=stripe_id, stripe_key=access_key,
+        licensing_protocol=json.load(open('./copyright/static/survey/licensing-protocol.json', 'rb')))
 
 ## Helper Functions
-
 def allowed_file(filename):
     return '.' in filename and \
        filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
