@@ -1,5 +1,5 @@
 {
-	"name": "Licensing Protocal for Photographers",
+	"name": "Licensing Protocol for Photographers",
 	"sections": [
 		{
 			"title": null,
@@ -9,14 +9,38 @@
 					"type": "check",
 					"name": "categories",
 					"options": [
-						"Animals, Plants & Nature",
-						"Architecture",
-						"People & Portraits",
-						"Sports",
-						"Still Life",
-						"Street and Urban",
-						"Transportation",
-						"Other"
+						{
+							"text": "Animals, Plants & Nature",
+							"value": 1
+						},
+						{
+							"text": "Architecture",
+							"value": 2
+						},
+						{
+							"text": "People & Portraits",
+							"value": 3
+						},
+						{
+							"text": "Sports",
+							"value": 4
+						},
+						{
+							"text": "Still Life",
+							"value": 5
+						},
+						{
+							"text": "Street and Urban",
+							"value": 6
+						},
+						{
+							"text": "Transportation",
+							"value": 7
+						},
+						{
+							"text": "Other",
+							"value": 0
+						}
 					]
 				},
 				{
@@ -35,18 +59,25 @@
 					"title": "How do you want to be credited?",
 					"type": "check",
 					"name": "credit_type",
-					"id": "credit-type",
 					"options": [
-						"Image Already Includes Credit (e.g., watermark, embedded credit)",
-						"Text Near the Image (e.g., text at the website)",
-						"No Credit (do not want credit)"
+						{
+							"text": "Image Already Includes Credit (e.g., watermark, embedded credit)",
+							"value": 1
+						},
+						{
+							"text": "Text Near the Image (e.g., text at the website)",
+							"value": 2
+						},
+						{
+							"text": "No Credit (do not want credit)",
+							"value": 0
+						}
 					]
 				},
 				{
 					"title": "Who do you want credit to be given?",
 					"placeholder": "&copy; 2016 John Doe",
 					"type": "text",
-					"id": "credit-receiver",
 					"name": "credit_receiver",
 					"visible": false
 				},
@@ -56,9 +87,18 @@
 					"type": "radio",
 					"name": "edit_privilege",
 					"options": [
-						"Yes (edit as desired)",
-						"Only minor edits allowed (e.g., crop, color shift, flip, and resize)",
-						"No (\"as is\" use only)"
+						{
+							"text": "Yes (edit as desired)",
+							"value": 1
+						},
+						{
+							"text": "Only minor edits allowed (e.g., crop, color shift, flip, and resize)",
+							"value": 2
+						},
+						{
+							"text": "No (\"as is\" use only)",
+							"value": 0
+						}
 					]
 				}
 			]
@@ -70,11 +110,16 @@
 					"title": "Do you want to set licensing fees?",
 					"subtitle": "All licenses fees are in USD",
 					"type": "radio",
-					"name": "set-fees-boolean",
-					"id": "set-fees-boolean",
+					"name": "set_fees_boolean",
 					"options": [
-						"No, I don't want to charge for any license",
-						"Yes, I'll set the licensing fees below"
+						{
+							"text": "No, I don't want to charge for any license",
+							"value": 0
+						},
+						{
+							"text": "Yes, I'll set the licensing fees below",
+							"value": 1
+						}
 					]
 				},
 				{
@@ -82,35 +127,39 @@
 					"subtitle": "License Exchange is free for everyone. There's only a 2.9% + 30¢ fee per transaction that goes directly to the online payment processor (Stripe).",
 					"type": "table",
 					"format": "number",
-					"id": "price-matrix",
-					"name": "price",
+					"name": "price_matrix",
 					"rows": [
 						{
 							"text": "1 person",
-							"tooltip": true,
-							"tooltip-text": "e.g., self employed, blogger, student"
+							"tooltipPlacement": "right",
+							"tooltipText": "e.g., self employed, blogger, student",
+							"name": 1
 						},
 						{
 							"text": "2-50 people",
-							"tooltip": true,
-							"tooltip-text": "e.g., SME's"
+							"tooltipPlacement": "right",
+							"tooltipText": "e.g., SME's",
+							"name": 2
 						},
 						{
 							"text": "51+ people",
-							"tooltip": true,
-							"tooltip-text": "e.g., large corporations, NGO's, universities, governmental agencies"
+							"tooltipPlacement": "right",
+							"tooltipText": "e.g., large corporations, NGO's, universities, governmental agencies",
+							"name": 3
 						}
 					],
 					"cols": [
 						{
 							"text": "Internal use",
-							"tooltip": true,
-							"tooltip-text": "e.g., presentation, brochure or newsletter for employees, closed internal network, social media or website that is available only to employees"
+							"tooltipPlacement": "top",
+							"tooltipText": "e.g., presentation, brochure or newsletter for employees, closed internal network, social media or website that is available only to employees",
+							"name": 1
 						},
 						{
 							"text": "External & Internal use",
-							"tooltip": true,
-							"tooltip-text": "e.g., advertisement, campaign,  product or service sold to third parties, website, Facebook page or blog"
+							"tooltipPlacement": "top",
+							"tooltipText": "e.g., advertisement, campaign,  product or service sold to third parties, website, Facebook page or blog",
+							"name": 2
 						}
 					]
 				}

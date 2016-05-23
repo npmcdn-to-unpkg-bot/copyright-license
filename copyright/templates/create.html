@@ -19,52 +19,100 @@
   </ol>
 
   {% if not token %}
-  <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write">
-    <img src="/static/images/stripe.png">
-  </a>
-
+    <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id=ca_6MnivEyxNIcx1cNuyoGHc7u1dRcNevgW&amp;scope=read_write">
+      <img src="/static/images/stripe.png">
+    </a>
   {% else %}
-  <p>You've authenticated via Stripe Connect as {{stripe_id}}. You can create a license below:</p>
+    <p>You've authenticated via Stripe Connect as {{stripe_id}}. You can create a license below:</p>
 
-  <form id="licenseInfo" class="well dropzone" enctype="multipart/form-data" action="/register" method="POST">
+    <form id="licenseInfo" class="well dropzone" enctype="multipart/form-data" action="/register" method="POST">
 
-    <!-- Upload Image -->
-    <div class="form-group">
-      <label>Image File</label><br>
+      <!-- Upload Image -->
+      <div class="form-group">
+        <label>Image File</label><br>
 
-      <!-- Drop Zone with Preview -->
-      <div id="dropzoneWrapper">
-        <div id="dropzone">
-          <img id="dropzonePreviewImg" class="hidden" src="" alt="">
-          <div id="dropzoneDetails" class="hidden">
-            <span id="dropzoneName"></span>
-            <span id="dropzoneSize"></span>
+        <!-- Drop Zone with Preview -->
+        <div id="dropzoneWrapper">
+          <div id="dropzone">
+            <img id="dropzonePreviewImg" class="hidden" src="" alt="">
+            <div id="dropzoneDetails" class="hidden">
+              <span id="dropzoneName"></span>
+              <span id="dropzoneSize"></span>
+            </div>
+            <div id="dropzoneOverlayMessage">
+              <!--[if !IE]> -->
+              Drag image here or <br>
+              <!-- <![endif]-->
+              Click to select an image
+            </div>
           </div>
-          <div id="dropzoneOverlayMessage">
-            <!--[if !IE]> -->
-            Drag image here or <br>
-            <!-- <![endif]-->
-            Click to select an image
-          </div>
+          <input id="fileInput" name="imageFile" type="file" accept="image/jpeg, image/png, image/gif" required>
         </div>
-        <input id="fileInput" name="imageFile" type="file" accept="image/jpeg, image/png, image/gif" required>
       </div>
-    </div>
 
-    <p id="loading-message">Loading...</p>
+      {% for section in licensing_protocol.sections %}
+        {% if section.title %}<h3>{{ section.title }}</h3>{% endif %}
+        {% for question in section.questions %}
+          {% if question.title %}<h4>{{ question.title }}</h4>{% endif %}
+          {% if question.subtitle %}<h5>{{ question.subtitle }}</h5>{% endif %}
+          {% if question.type == "check" %}
+            {% for option in question.options %}
+              <div class="checkbox">
+                <label>
+                  <input id="{{ question.name }}" type="checkbox" name="{{ question.name }}" value="{{ option.value }}">
+                  {{ option.text }}
+                </label>
+              </div>
+            {% endfor %}
+          {% elif question.type == "radio" %}
+            {% for option in question.options %}
+              <div class="radio">
+                <label>
+                  <input id="{{ question.name }}" type="radio" name="{{ question.name }}" value="{{ option.value }}">
+                  {{ option.text }}
+                </label>
+              </div>
+            {% endfor %}
+          {% elif question.type == "text" %}
+            <input type="text" class="form-control" placeholder="{{ question.placeholder }}" name="{{ question.name }}">
+          {% elif question.type == "table" %}
+            <table class="table">
+              <tr>
+                <th></th>
+                {% for col in question.cols %}
+                  <th data-toggle="tooltip" data-placement="{{ col.tooltipPlacement }}" title="{{ col.tooltipText }}">{{ col.text }}</th>
+                {% endfor %}
+              </tr>
+              {% for row in question.rows %}
+                <tr>
+                  <th data-toggle="tooltip" data-placement="{{ row.tooltipPlacement }}" title="{{ row.tooltipText }}">{{ row.text }}</th>
+                  {% for col in question.cols %}
+                    <td>
+                      <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input type="number" class="form-control" name="price{{ row.name }}{{ col.name }}" step="0.01" min="0">
+                      </div>
+                    </td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </table>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
 
-    <!-- Stripe -->
-    <input type="hidden" value="{{stripe_id}}" name="stripe_id"/>
+      <!-- Stripe -->
+      <input type="hidden" value="{{ stripe_id }}" name="stripe_id"/>
 
-  </form>
+      <button type="button" class="btn btn-default" id="submit-btn">Submit</button>
+
+    </form>
   {% endif %}
 
 </div>
 {% endblock %}
 
 {% block scripts %}
-{% if token %}
   <script type="text/javascript" src="../static/js/upload.js"></script>
   <script type="text/javascript" src="../static/js/licensing-protocol.js"></script>
-{% endif %}
 {% endblock %}
