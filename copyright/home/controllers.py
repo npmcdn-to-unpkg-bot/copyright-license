@@ -8,6 +8,10 @@ from math import ceil
 
 import sys
 
+import smtplib
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+
 # to print debug statements to Heroku console:
 # import sys
 # print "statement"
@@ -78,6 +82,23 @@ def submit_feedback():
     newFeedback = Feedback()
     newFeedback.input = request.form['feedback']
     db.session.add(newFeedback)
+
+    fromaddr = "copyrightfeedback@gmail.com"
+    toaddr = ['chrisyeh@stanford.edu', 'rbarcelo@stanford.edu']
+    COMMASPACE = ', '
+    msg = MIMEMultipart()
+    msg['From'] = fromaddr
+    msg['To'] = COMMASPACE.join(toaddr)
+    msg['Subject'] = "You've received new feedback."
+    body = "According to one user, \"" + request.form['feedback'] + "\""
+    msg.attach(MIMEText(body, 'plain'))
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(fromaddr, app.config['EMAIL_PASSWORD'])
+    text = msg.as_string()
+    server.sendmail(fromaddr, toaddr, text)
+    server.quit()
+
     db.session.commit()
     return redirect(url_for('homeRoutes.about'))
 
