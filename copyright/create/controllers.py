@@ -27,7 +27,8 @@ def record_params(setup_state):
 
 @createRoutes.route('/create')
 def create():
-    return render_template('create.html', token=None)
+    return render_template('create.html', token=None,
+        licensing_protocol=json.load(open('./copyright/static/survey/licensing-protocol.json', 'rb')))
 
 @createRoutes.route('/register', methods=['POST'])
 def register_license():

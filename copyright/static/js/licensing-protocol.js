@@ -5,6 +5,11 @@
 
 // ---------------------------------------------- initialization
 
+// disable all inputs if user has not connected Stripe account
+if ($('#create-form-wrapper').hasClass('blur')) {
+	$('#licenseInfo').find(':input').attr('disabled', 'disabled');
+}
+
 // hide the "how do you want to be credited?" question for now
 $('#credit_type-wrapper').toggle(false);
 
@@ -54,4 +59,8 @@ $('#submit-btn').on('click', function(event) {
 // where 1 is the value for showing and 2 is value for hiding
 $('#credit-wrapper').on('click', 'input', function(event) {
 	$('#credit_type-wrapper').toggle($(this).val() === '1');
+});
+
+$('#toggleTerms').on('click', function(e) {
+	$('.terms-list').toggle();
 });

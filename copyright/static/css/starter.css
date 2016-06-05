@@ -69,6 +69,5 @@ h3 {
 }
 
 ol.terms-list {
-  list-style-type: lower-roman;
+  display: none;
 }
-

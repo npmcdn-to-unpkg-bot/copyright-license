@@ -1,3 +1,7 @@
+/************
+ * DROPZONE *
+ ************/
+
 #dropzoneWrapper.active {
   position: relative;
   box-sizing: border-box;
@@ -73,6 +77,10 @@
   display: none !important;
 }
 
+/****************
+ * REST OF FORM *
+ ****************/
+
 .hidden {
   display: none;
 }
@@ -86,4 +94,43 @@
   padding-right: 5px;
   padding-bottom: 2px;
   padding-top: 2px;
+}
+
+#toggleTerms {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/************************
+ * Blur the create form *
+ * if not connected to  *
+ * Stripe account
+ ************************/
+
+#create-form-wrapper.blur {
+  opacity: 0.5;
+  text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.9);
+  color: transparent !important;
+  max-height: 500px;
+  position: relative;
+  overflow: hidden;
+}
+
+#create-form-wrapper.blur h3,
+#create-form-wrapper.blur p,
+#create-form-wrapper.blur div
+ {
+  color: transparent !important;
+}
+
+#create-form-wrapper.blur .more { 
+  position: absolute; 
+  bottom: 0; 
+  left: 0;
+  width: 100%; 
+  text-align: center; 
+  margin: 0; padding: 50px 0; 
+  
+  /* "transparent" only works here because == rgba(0,0,0,0) */
+  background-image: linear-gradient(to bottom, transparent, #cccccc);
 }
