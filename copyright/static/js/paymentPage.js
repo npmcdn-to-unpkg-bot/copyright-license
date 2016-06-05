@@ -16,3 +16,7 @@ window.onload = function() {
         $('#displayCost').data('cents', price);
     });
 };
+
+$('#toggleTerms').on('click', function(e) {
+    $('.terms-list').toggle();
+});
